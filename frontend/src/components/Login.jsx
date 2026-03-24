@@ -52,7 +52,7 @@ const Login = () => {
         
         <div className="flex flex-col items-center justify-center mb-8">
            <div className="mb-4">
-              <img src={logo} alt="Trophy Logo" className="w-16 h-16 object-contain" />
+              <img src={logo} alt="Trophy Logo" className="w-24 h-24 md:w-28 md:h-28 object-contain" />
            </div>
            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2 drop-shadow-md">
              <span className="text-blue-500">Daily</span>

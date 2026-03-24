@@ -258,11 +258,7 @@ const Admin = () => {
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         
         {/* TOP NAV */}
-        <header className="h-20 px-4 md:px-8 flex items-center justify-between border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
-           <div className="relative w-full max-w-md hidden sm:block">
-              <Search className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 transform -translate-y-1/2" />
-              <input type="text" placeholder="Search analytics, partners, or coupons..." className="w-full bg-[#141E33]/50 border border-[#1E293B] rounded-full pl-11 pr-4 py-2.5 text-sm font-medium text-white focus:outline-none focus:border-blue-500 focus:bg-[#141E33] transition-all placeholder-slate-600"/>
-           </div>
+         <header className="h-20 px-4 md:px-8 flex items-center justify-end border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
            
            <div className="flex items-center gap-4 text-slate-400 ml-auto">
               <button className="relative p-2.5 rounded-full hover:bg-[#1E293B] hover:text-white transition-colors">

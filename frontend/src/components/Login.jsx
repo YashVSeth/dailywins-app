@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { User, KeyRound, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -23,6 +24,7 @@ const Login = () => {
       navigate('/admin');
       return; // Exit successful admin block
     } catch (adminErr) {
+      console.log(adminErr);
       // Admin login failed. It was either a 401 (not an admin) or a server error.
       // 2. Fallback: attempt to log in as a Local Partner
       try {
@@ -49,10 +51,10 @@ const Login = () => {
       <div className="bg-slate-800/80 backdrop-blur-2xl border border-white/10 p-8 md:p-10 rounded-3xl shadow-2xl max-w-md w-full z-10 animate-in fade-in zoom-in-95 duration-500">
         
         <div className="flex flex-col items-center mb-8">
-           <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 border border-white/5">
-              <ShieldCheck className="w-8 h-8 text-cyan-400" />
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 border border-white/5 overflow-hidden">
+              <img src={logo} alt="DailyWins Logo" className="w-full h-full object-cover p-2" />
            </div>
-           <h1 className="text-3xl font-bold text-white tracking-tight">Platform Login</h1>
+           <h1 className="text-3xl font-bold text-white tracking-tight">DailyWins</h1>
            <p className="text-slate-400 text-sm mt-2 text-center">Sign in to manage your rewards or access the admin dashboard.</p>
         </div>
 

@@ -190,11 +190,7 @@ const Admin = () => {
     { name: 'SUN', value: 480 }
   ];
 
-  const recentActivity = [
-    { id: '#ACT-89423', business: 'Gourmet Garden', category: 'Restaurant & Catering', detail: 'Issued 50 Coupons', status: 'ACTIVE', date: 'Oct 12, 2023', iconColor: 'bg-orange-500' },
-    { id: '#ACT-89422', business: 'Pulse Fitness Hub', category: 'Health & Wellness', detail: 'Launched Challenge', status: 'PENDING', date: 'Oct 12, 2023', iconColor: 'bg-blue-500' },
-    { id: '#ACT-89421', business: 'Urban Style Co.', category: 'Apparel & Retail', detail: 'Redeemed 120 Tokens', status: 'COMPLETED', date: 'Oct 11, 2023', iconColor: 'bg-yellow-500' },
-  ];
+  const recentActivity = [];
 
   return (
     <div className="flex h-screen bg-[#0B1120] text-slate-300 font-sans overflow-hidden">
@@ -414,7 +410,12 @@ const Admin = () => {
                              </tr>
                           </thead>
                           <tbody>
-                             {recentActivity.map((act, i) => (
+                             {recentActivity.length === 0 ? (
+                                <tr>
+                                   <td colSpan="5" className="py-12 text-center text-slate-500 text-sm font-medium">No recent activity to show yet.</td>
+                                </tr>
+                             ) : (
+                                recentActivity.map((act, i) => (
                                 <tr key={i} className="border-b border-[#1E293B]/40 hover:bg-[#141E33]/40 transition-colors group">
                                    <td className="py-5">
                                       <div className="flex items-center gap-4 w-60">
@@ -436,7 +437,8 @@ const Admin = () => {
                                    </td>
                                    <td className="py-5 text-slate-400 text-right font-medium">{act.date}</td>
                                 </tr>
-                             ))}
+                                ))
+                             )}
                          </tbody>
                       </table>
                    </div>

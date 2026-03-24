@@ -12,6 +12,7 @@ import Businesses from './Businesses';
 import Coupons from './Coupons';
 import Challenges from './Challenges';
 import Rewards from './Rewards';
+import logo from '../assets/logo.png';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -202,11 +203,13 @@ const Admin = () => {
       <aside className="w-64 bg-[#0F172A] border-r border-[#1E293B] flex-shrink-0 flex flex-col justify-between hidden md:flex">
         <div className="p-6">
            <div className="flex items-center gap-3 mb-10">
-              <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center">
-                 <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-yellow-400 to-orange-500 flex items-center justify-center text-[8px] font-black text-white">DW</div>
+              <div className="w-10 h-10 flex items-center justify-center overflow-hidden shrink-0">
+                 <img src={logo} alt="DailyWins Trophy" className="w-[180%] h-[180%] max-w-none object-contain" />
               </div>
               <div className="flex flex-col">
-                 <h1 className="text-white font-bold text-lg leading-tight tracking-tight">DailyWins</h1>
+                 <h1 className="font-extrabold text-xl leading-tight tracking-tight drop-shadow-md">
+                   <span className="text-blue-500">Daily</span><span className="text-yellow-400">Wins</span>
+                 </h1>
                  <span className="text-slate-500 text-[10px] tracking-wider font-semibold uppercase">Admin Console</span>
               </div>
            </div>

@@ -51,8 +51,8 @@ const Login = () => {
       <div className="bg-slate-800/80 backdrop-blur-2xl border border-white/10 p-8 md:p-10 rounded-3xl shadow-2xl max-w-md w-full z-10 animate-in fade-in zoom-in-95 duration-500">
         
         <div className="flex flex-col items-center justify-center mb-8">
-           <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 border border-white/5 overflow-hidden">
-              <img src={logo} alt="Trophy Logo" className="w-full h-full object-cover p-2" />
+           <div className="mb-4">
+              <img src={logo} alt="Trophy Logo" className="w-16 h-16 object-contain" />
            </div>
            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2 drop-shadow-md">
              <span className="text-blue-500">Daily</span>

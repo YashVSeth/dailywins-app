@@ -258,7 +258,7 @@ const Admin = () => {
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         
         {/* TOP NAV */}
-         <header className="h-20 px-4 md:px-8 flex items-center justify-end border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
+         <header className="lg:hidden h-20 px-4 md:px-8 flex items-center justify-end border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
            
            <div className="flex items-center gap-4 text-slate-400 ml-auto">
               <button onClick={handleLogout} className="lg:hidden p-2.5 rounded-full hover:bg-[#1E293B] hover:text-white bg-red-500/10 text-red-500 transition-colors flex items-center justify-center">

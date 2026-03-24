@@ -46,7 +46,7 @@ exports.loginAdmin = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error logging in' });
+    console.error('Admin login error:', error.message, error.stack);
+    res.status(500).json({ message: 'Server error logging in: ' + error.message });
   }
 };

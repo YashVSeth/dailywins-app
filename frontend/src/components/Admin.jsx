@@ -261,13 +261,6 @@ const Admin = () => {
          <header className="h-20 px-4 md:px-8 flex items-center justify-end border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
            
            <div className="flex items-center gap-4 text-slate-400 ml-auto">
-              <button className="relative p-2.5 rounded-full hover:bg-[#1E293B] hover:text-white transition-colors">
-                 <Bell className="w-5 h-5"/>
-                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-[#0B1120]"></span>
-              </button>
-              <button className="hidden sm:flex p-2.5 rounded-full hover:bg-[#1E293B] hover:text-white bg-[#141E33]/50 border border-[#1E293B] transition-colors items-center justify-center">
-                 <HelpCircle className="w-5 h-5"/>
-              </button>
               <button onClick={handleLogout} className="lg:hidden p-2.5 rounded-full hover:bg-[#1E293B] hover:text-white bg-red-500/10 text-red-500 transition-colors flex items-center justify-center">
                  <LogOut className="w-5 h-5"/>
               </button>

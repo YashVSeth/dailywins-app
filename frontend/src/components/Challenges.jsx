@@ -58,29 +58,7 @@ export default function Challenges({
                         <label className="block text-white text-xs font-bold mb-3">Description</label>
                         <textarea required placeholder="What is this challenge about and how can users participate?" value={challengeFormData.description} onChange={e=>setChallengeFormData({...challengeFormData, description: e.target.value})} rows="4" className="w-full bg-[#182136] border border-[#1E293B] rounded-xl px-4 py-3.5 text-sm font-medium text-white focus:outline-none focus:border-blue-500 transition-colors placeholder-[#334155] resize-none"></textarea>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-white text-xs font-bold mb-3">Category</label>
-                            <div className="relative">
-                                <select value={challengeFormData.category} onChange={e=>setChallengeFormData({...challengeFormData, category: e.target.value})} className="appearance-none w-full bg-[#182136] border border-[#1E293B] rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium text-slate-300 focus:outline-none focus:border-blue-500 transition-colors">
-                                <option value="ENGAGEMENT">Engagement</option>
-                                <option value="SALES">Sales</option>
-                                <option value="REFERRAL">Referral</option>
-                                <option value="LOCATION">Location Check-in</option>
-                                <option value="MILESTONE">Milestone</option>
-                                </select>
-                                <ChevronRight className="w-4 h-4 text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 rotate-90" />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-white text-xs font-bold mb-3">Difficulty</label>
-                            <div className="flex items-center bg-[#182136] border border-[#1E293B] rounded-xl p-1">
-                                <button type="button" onClick={()=>setChallengeFormData({...challengeFormData, difficulty: 'EASY'})} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${challengeFormData.difficulty==='EASY'?'bg-[#263452] text-white shadow-sm':'text-slate-400 hover:text-slate-300'}`}>Easy</button>
-                                <button type="button" onClick={()=>setChallengeFormData({...challengeFormData, difficulty: 'MEDIUM'})} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${challengeFormData.difficulty==='MEDIUM'?'bg-[#263452] text-white shadow-sm':'text-slate-400 hover:text-slate-300'}`}>Med</button>
-                                <button type="button" onClick={()=>setChallengeFormData({...challengeFormData, difficulty: 'HARD'})} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${challengeFormData.difficulty==='HARD'?'bg-[#263452] text-white shadow-sm':'text-slate-400 hover:text-slate-300'}`}>Hard</button>
-                            </div>
-                        </div>
-                    </div>
+
                     </div>
                 </div>
 

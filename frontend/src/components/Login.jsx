@@ -3,6 +3,7 @@ import axios from 'axios';
 import { User, KeyRound, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import dailywinsText from '../assets/dailywins-text.png';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -52,9 +53,9 @@ const Login = () => {
         
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 border border-white/5 overflow-hidden">
-              <img src={logo} alt="DailyWins Logo" className="w-full h-full object-cover p-2" />
+              <img src={logo} alt="Trophy Logo" className="w-full h-full object-cover p-2" />
            </div>
-           <h1 className="text-3xl font-bold text-white tracking-tight">DailyWins</h1>
+           <img src={dailywinsText} alt="DailyWins" className="h-12 md:h-14 mb-2 object-contain" />
            <p className="text-slate-400 text-sm mt-2 text-center">Sign in to manage your rewards or access the admin dashboard.</p>
         </div>
 

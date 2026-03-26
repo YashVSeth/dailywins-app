@@ -155,6 +155,17 @@ const Admin = () => {
     finally { setChallengeLoading(false); }
   };
 
+  const deleteChallenge = async (challengeId) => {
+    if(!window.confirm('Are you sure you want to permanently delete this challenge? This action cannot be undone.')) return;
+    try {
+      await axios.delete(`${API_BASE}/challenges/${challengeId}`);
+      loadDashboardData();
+    } catch (error) {
+      console.error('Error deleting challenge:', error);
+      alert(error.response?.data?.message || 'Error deleting challenge');
+    }
+  };
+
   const createPromo = async (e) => {
     e.preventDefault();
     setPromoLoading(true); setPromoMessage('');
@@ -447,7 +458,7 @@ const Admin = () => {
 
            {activeTab === 'businesses' && <Businesses stats={stats} partners={partners} promos={promos} isAddingBusiness={isAddingBusiness} setIsAddingBusiness={setIsAddingBusiness} partnerFormData={partnerFormData} setPartnerFormData={setPartnerFormData} registerPartner={registerPartner} partnerLoading={partnerLoading} partnerMessage={partnerMessage} updatePartnerStatus={updatePartnerStatus} deletePartner={deletePartner} />}
            {activeTab === 'coupons' && <Coupons stats={stats} partners={partners} promos={promos} promoFormData={promoFormData} setPromoFormData={setPromoFormData} createPromo={createPromo} promoLoading={promoLoading} promoMessage={promoMessage} updatePromoStatus={updatePromoStatus} deletePromo={deletePromo} />}
-           {activeTab === 'challenges' && <Challenges partners={partners} promos={promos} challengeFormData={challengeFormData} setChallengeFormData={setChallengeFormData} registerChallenge={registerChallenge} challengeLoading={challengeLoading} challengeMessage={challengeMessage} />}
+           {activeTab === 'challenges' && <Challenges challenges={challenges} partners={partners} promos={promos} challengeFormData={challengeFormData} setChallengeFormData={setChallengeFormData} registerChallenge={registerChallenge} challengeLoading={challengeLoading} challengeMessage={challengeMessage} deleteChallenge={deleteChallenge} />}
            {activeTab === 'rewards' && <Rewards challenges={challenges} rewardFormData={rewardFormData} setRewardFormData={setRewardFormData} generateReward={generateReward} rewardLoading={rewardLoading} rewardMessage={rewardMessage} generatedCouponId={generatedCouponId} generatedQrCode={generatedQrCode} />}
 
         </div>

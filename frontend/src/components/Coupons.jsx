@@ -39,13 +39,13 @@ export default function Coupons({
                 <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
                     <h3 className="text-slate-400 text-xs font-bold mb-3 uppercase tracking-wider">Total Coupons</h3>
                     <div className="flex items-end gap-3">
-                        <span className="text-white text-3xl font-black">{stats?.totalCoupons || '0'}</span>
+                        <span className="text-white text-3xl font-black">{promos?.length || '0'}</span>
                     </div>
                 </div>
                 <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
                     <h3 className="text-slate-400 text-xs font-bold mb-3 uppercase tracking-wider">Active Coupons</h3>
                     <div className="flex items-end gap-3">
-                        <span className="text-white text-3xl font-black">{((stats?.totalCoupons || 0) - (stats?.redeemedCoupons || 0)) || '0'}</span>
+                        <span className="text-white text-3xl font-black">{promos?.filter(p => p.status === 'ACTIVE').length || '0'}</span>
                     </div>
                 </div>
             </div>

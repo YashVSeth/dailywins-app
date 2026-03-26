@@ -35,23 +35,17 @@ export default function Coupons({
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
-                    <h3 className="text-slate-400 text-xs font-bold mb-3">Total Active Coupons</h3>
+                    <h3 className="text-slate-400 text-xs font-bold mb-3 uppercase tracking-wider">Total Coupons</h3>
                     <div className="flex items-end gap-3">
-                        <span className="text-white text-3xl font-black">{stats?.totalCoupons || promos?.length || '0'}</span>
+                        <span className="text-white text-3xl font-black">{stats?.totalCoupons || '0'}</span>
                     </div>
                 </div>
                 <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
-                    <h3 className="text-slate-400 text-xs font-bold mb-3">Total Redemptions</h3>
+                    <h3 className="text-slate-400 text-xs font-bold mb-3 uppercase tracking-wider">Active Coupons</h3>
                     <div className="flex items-end gap-3">
-                        <span className="text-white text-3xl font-black">{stats?.redeemedCoupons || '0'}</span>
-                    </div>
-                </div>
-                <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
-                    <h3 className="text-slate-400 text-xs font-bold mb-3">Avg. Discount Value</h3>
-                    <div className="flex items-end gap-3">
-                        <span className="text-white text-3xl font-black">0%</span>
+                        <span className="text-white text-3xl font-black">{((stats?.totalCoupons || 0) - (stats?.redeemedCoupons || 0)) || '0'}</span>
                     </div>
                 </div>
             </div>

@@ -70,18 +70,12 @@ const RewardPage = () => {
       <div className="w-full max-w-[420px] min-h-screen flex flex-col">
 
         {/* Top Navigation */}
-        <div className="flex items-center justify-between px-5 pt-6 pb-4">
+        <div className="flex items-center px-5 pt-6 pb-4">
           <div className="flex items-center gap-2">
             <span className="text-xl">🏆</span>
             <span className="font-extrabold text-lg tracking-tight">
               <span className="text-blue-500">Daily</span><span className="text-yellow-400">Wins</span>
             </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Bell className="w-5 h-5 text-slate-400" />
-            <div className="w-8 h-8 rounded-full bg-[#1E293B] border border-[#334155] flex items-center justify-center">
-              <User className="w-4 h-4 text-slate-400" />
-            </div>
           </div>
         </div>
 

@@ -65,9 +65,6 @@ const Admin = () => {
   const [promoLoading, setPromoLoading] = useState(false);
   const [promoMessage, setPromoMessage] = useState('');
 
-  if (authChecking) return <div className="min-h-screen bg-[#0B1120] flex items-center justify-center"><Loader2 className="w-10 h-10 text-blue-500 animate-spin" /></div>;
-  if (!auth) return <Navigate to="/login" replace />;
-
   useEffect(() => {
     // Pre-select first active challenge if none selected
     const activeChallenges = challenges.filter(c => c.isActive !== false);
@@ -75,6 +72,9 @@ const Admin = () => {
         setRewardFormData(prev => ({ ...prev, challengeId: activeChallenges[0]._id }));
     }
   }, [challenges, rewardFormData.challengeId]);
+
+  if (authChecking) return <div className="min-h-screen bg-[#0B1120] flex items-center justify-center"><Loader2 className="w-10 h-10 text-blue-500 animate-spin" /></div>;
+  if (!auth) return <Navigate to="/login" replace />;
 
   const generateReward = async (e) => {
     e.preventDefault();

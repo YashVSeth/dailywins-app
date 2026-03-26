@@ -164,18 +164,18 @@ exports.getPartnerStats = async (req, res) => {
 
     const todaysScans = await Coupon.countDocuments({
       partner: id,
-      status: 'Redeemed',
+      status: 'Used',
       updatedAt: { $gte: startOfDay }
     });
 
     // 3. Get total lifetime scans
     const totalScans = await Coupon.countDocuments({
       partner: id,
-      status: 'Redeemed'
+      status: 'Used'
     });
 
     // 4. Get 5 most recent scans
-    const recentScans = await Coupon.find({ partner: id, status: 'Redeemed' })
+    const recentScans = await Coupon.find({ partner: id, status: 'Used' })
       .populate('user', 'phoneNumber name')
       .populate('challenge', 'title')
       .sort({ updatedAt: -1 })

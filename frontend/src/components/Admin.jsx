@@ -36,6 +36,8 @@ const Admin = () => {
   
   // -- GLOBAL DATA --
   const [stats, setStats] = useState({ totalCoupons: 0, redeemedCoupons: 0, totalPartners: 0, totalChallenges: 0 });
+  const [chartData, setChartData] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
   const [partners, setPartners] = useState([]);
   const [challenges, setChallenges] = useState([]);
 
@@ -76,6 +78,8 @@ const Admin = () => {
          axios.get(`${API_BASE}/promos`)
       ]);
       setStats(statsRes.data);
+      setChartData(statsRes.data.chartData || []);
+      setRecentActivity(statsRes.data.recentActivity || []);
       setPartners(partnersRes.data);
       setChallenges(challengesRes.data);
       setPromos(promosRes.data);
@@ -184,13 +188,7 @@ const Admin = () => {
     }
   };
 
-  const chartData = [
-    { name: 'MON', value: 200 }, { name: 'TUE', value: 150 }, { name: 'WED', value: 400 },
-    { name: 'THU', value: 180 }, { name: 'FRI', value: 550 }, { name: 'SAT', value: 220 },
-    { name: 'SUN', value: 480 }
-  ];
 
-  const recentActivity = [];
 
   return (
     <div className="flex h-screen bg-[#0B1120] text-slate-300 font-sans overflow-hidden">

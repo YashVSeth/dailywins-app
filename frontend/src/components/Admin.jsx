@@ -13,6 +13,7 @@ import Coupons from './Coupons';
 import Challenges from './Challenges';
 import Rewards from './Rewards';
 import logo from '../assets/logo.png';
+import { useAdminStore } from '../store/useAdminStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -34,15 +35,14 @@ const Admin = () => {
      setAuth(null);
   };
   
-  // -- GLOBAL DATA --
-  const [stats, setStats] = useState({ totalCoupons: 0, redeemedCoupons: 0, totalPartners: 0, totalChallenges: 0 });
-  const [chartData, setChartData] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
-  const [partners, setPartners] = useState([]);
-  const [challenges, setChallenges] = useState([]);
+  // -- GLOBAL DATA (from Zustand) --
+  const { 
+    stats, chartData, recentActivity, partners, challenges, promos, 
+    fetchAllData 
+  } = useAdminStore();
 
   useEffect(() => {
-    if (auth) loadDashboardData();
+    if (auth) fetchAllData();
   }, [auth]);
 
   // -- FORM STATES --
@@ -64,35 +64,17 @@ const Admin = () => {
   const [promoFormData, setPromoFormData] = useState({ title: '', description: '', partnerId: '', discountType: 'PERCENTAGE', discountValue: '', minSpend: '', validUntil: '', usageLimit: '' });
   const [promoLoading, setPromoLoading] = useState(false);
   const [promoMessage, setPromoMessage] = useState('');
-  const [promos, setPromos] = useState([]);
 
   if (authChecking) return <div className="min-h-screen bg-[#0B1120] flex items-center justify-center"><Loader2 className="w-10 h-10 text-blue-500 animate-spin" /></div>;
   if (!auth) return <Navigate to="/login" replace />;
 
-  const loadDashboardData = async () => {
-    try {
-      const [statsRes, partnersRes, challengesRes, promosRes] = await Promise.all([
-         axios.get(`${API_BASE}/stats`),
-         axios.get(`${API_BASE}/partners`),
-         axios.get(`${API_BASE}/challenges`),
-         axios.get(`${API_BASE}/promos`)
-      ]);
-      setStats(statsRes.data);
-      setChartData(statsRes.data.chartData || []);
-      setRecentActivity(statsRes.data.recentActivity || []);
-      setPartners(partnersRes.data);
-      setChallenges(challengesRes.data);
-      setPromos(promosRes.data);
-
-      // Pre-select first active challenge if none selected
-      const activeChallenges = challengesRes.data.filter(c => c.isActive !== false);
-      if (!rewardFormData.challengeId && activeChallenges.length > 0) {
-          setRewardFormData(prev => ({ ...prev, challengeId: activeChallenges[0]._id }));
-      }
-    } catch (err) {
-      console.error('Error fetching data:', err);
+  useEffect(() => {
+    // Pre-select first active challenge if none selected
+    const activeChallenges = challenges.filter(c => c.isActive !== false);
+    if (!rewardFormData.challengeId && activeChallenges.length > 0) {
+        setRewardFormData(prev => ({ ...prev, challengeId: activeChallenges[0]._id }));
     }
-  };
+  }, [challenges, rewardFormData.challengeId]);
 
   const generateReward = async (e) => {
     e.preventDefault();
@@ -102,7 +84,7 @@ const Admin = () => {
       setGeneratedCouponId(response.data.couponId);
       setGeneratedQrCode(response.data.qrCodeDataUrl);
       setRewardMessage('Reward generated successfully!');
-      loadDashboardData();
+      fetchAllData();
     } catch (error) { setRewardMessage(error.response?.data?.message || 'Error'); } 
     finally { setRewardLoading(false); }
   };
@@ -114,7 +96,7 @@ const Admin = () => {
       await axios.post(`${API_BASE}/partners/register`, partnerFormData);
       setPartnerMessage('Business registered successfully!');
       setPartnerFormData({ name: '', description: '', location: '', email: '', phoneNumber: '', username: '', password: '' });
-      loadDashboardData();
+      fetchAllData();
     } catch (error) { setPartnerMessage(error.response?.data?.message || 'Error'); } 
     finally { setPartnerLoading(false); }
   };
@@ -125,7 +107,7 @@ const Admin = () => {
          status,
          ...credentials
       });
-      loadDashboardData();
+      fetchAllData();
     } catch (error) {
       console.error('Error updating status:', error);
       alert(error.response?.data?.message || 'Error updating status');
@@ -136,7 +118,7 @@ const Admin = () => {
     if(!window.confirm('Are you sure you want to permanently delete this partner? This action cannot be undone.')) return;
     try {
       await axios.delete(`${API_BASE}/partners/${partnerId}`);
-      loadDashboardData();
+      fetchAllData();
     } catch (error) {
       console.error('Error deleting partner:', error);
       alert(error.response?.data?.message || 'Error deleting partner');
@@ -150,7 +132,7 @@ const Admin = () => {
       await axios.post(`${API_BASE}/challenges/register`, challengeFormData);
       setChallengeMessage('Challenge created successfully!');
       setChallengeFormData({ title: '', description: '', category: 'ENGAGEMENT', difficulty: 'MEDIUM', targetMetric: '', durationDays: '', rewardPromoId: '', partnerId: '' });
-      loadDashboardData();
+      fetchAllData();
     } catch (error) { setChallengeMessage(error.response?.data?.message || 'Error'); } 
     finally { setChallengeLoading(false); }
   };
@@ -159,7 +141,7 @@ const Admin = () => {
     if(!window.confirm('Are you sure you want to permanently delete this challenge? This action cannot be undone.')) return;
     try {
       await axios.delete(`${API_BASE}/challenges/${challengeId}`);
-      loadDashboardData();
+      fetchAllData();
     } catch (error) {
       console.error('Error deleting challenge:', error);
       alert(error.response?.data?.message || 'Error deleting challenge');
@@ -190,7 +172,7 @@ const Admin = () => {
       await axios.post(`${API_BASE}/promos/create`, promoFormData);
       setPromoMessage('Coupon Template created successfully!');
       setPromoFormData({ title: '', description: '', partnerId: '', discountType: 'PERCENTAGE', discountValue: '', minSpend: '', validUntil: '', usageLimit: '' });
-      loadDashboardData();
+      fetchAllData();
     } catch (error) { setPromoMessage(error.response?.data?.message || 'Error'); } 
     finally { setPromoLoading(false); }
   };
@@ -198,7 +180,7 @@ const Admin = () => {
   const updatePromoStatus = async (promoId, status) => {
     try {
       await axios.patch(`${API_BASE}/promos/${promoId}/status`, { status });
-      loadDashboardData();
+      fetchAllData();
     } catch (error) {
        console.error('Error updating promo status:', error);
        alert(error.response?.data?.message || 'Error updating status');
@@ -209,7 +191,7 @@ const Admin = () => {
     if(!window.confirm('Are you sure you want to permanently delete this coupon template? This action cannot be undone.')) return;
     try {
       await axios.delete(`${API_BASE}/promos/${promoId}`);
-      loadDashboardData();
+      fetchAllData();
     } catch (error) {
        console.error('Error deleting promo:', error);
        alert(error.response?.data?.message || 'Error deleting promo');
@@ -487,10 +469,10 @@ const Admin = () => {
              </div>
            )}
 
-           {activeTab === 'businesses' && <Businesses stats={stats} partners={partners} promos={promos} isAddingBusiness={isAddingBusiness} setIsAddingBusiness={setIsAddingBusiness} partnerFormData={partnerFormData} setPartnerFormData={setPartnerFormData} registerPartner={registerPartner} partnerLoading={partnerLoading} partnerMessage={partnerMessage} updatePartnerStatus={updatePartnerStatus} deletePartner={deletePartner} />}
-           {activeTab === 'coupons' && <Coupons stats={stats} partners={partners} promos={promos} promoFormData={promoFormData} setPromoFormData={setPromoFormData} createPromo={createPromo} promoLoading={promoLoading} promoMessage={promoMessage} updatePromoStatus={updatePromoStatus} deletePromo={deletePromo} />}
-           {activeTab === 'challenges' && <Challenges challenges={challenges} partners={partners} promos={promos} challengeFormData={challengeFormData} setChallengeFormData={setChallengeFormData} registerChallenge={registerChallenge} challengeLoading={challengeLoading} challengeMessage={challengeMessage} deleteChallenge={deleteChallenge} />}
-           {activeTab === 'rewards' && <Rewards challenges={challenges} rewardFormData={rewardFormData} setRewardFormData={setRewardFormData} generateReward={generateReward} rewardLoading={rewardLoading} rewardMessage={rewardMessage} generatedCouponId={generatedCouponId} generatedQrCode={generatedQrCode} />}
+           {activeTab === 'businesses' && <Businesses isAddingBusiness={isAddingBusiness} setIsAddingBusiness={setIsAddingBusiness} partnerFormData={partnerFormData} setPartnerFormData={setPartnerFormData} registerPartner={registerPartner} partnerLoading={partnerLoading} partnerMessage={partnerMessage} updatePartnerStatus={updatePartnerStatus} deletePartner={deletePartner} />}
+           {activeTab === 'coupons' && <Coupons promoFormData={promoFormData} setPromoFormData={setPromoFormData} createPromo={createPromo} promoLoading={promoLoading} promoMessage={promoMessage} updatePromoStatus={updatePromoStatus} deletePromo={deletePromo} />}
+           {activeTab === 'challenges' && <Challenges challengeFormData={challengeFormData} setChallengeFormData={setChallengeFormData} registerChallenge={registerChallenge} challengeLoading={challengeLoading} challengeMessage={challengeMessage} deleteChallenge={deleteChallenge} />}
+           {activeTab === 'rewards' && <Rewards rewardFormData={rewardFormData} setRewardFormData={setRewardFormData} generateReward={generateReward} rewardLoading={rewardLoading} rewardMessage={rewardMessage} generatedCouponId={generatedCouponId} generatedQrCode={generatedQrCode} />}
 
         </div>
       </main>

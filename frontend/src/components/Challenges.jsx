@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Target, ChevronRight, Info, Ticket, CheckCircle2, Loader2, Building2, Search, Download, Plus, Filter, MoreHorizontal, Trash2 } from 'lucide-react';
 
+import { useAdminStore } from '../store/useAdminStore';
+
 export default function Challenges({
-    challenges,
-    partners,
-    promos,
     challengeFormData,
     setChallengeFormData,
     registerChallenge,
@@ -12,6 +11,7 @@ export default function Challenges({
     challengeMessage,
     deleteChallenge
 }) {
+    const { challenges, partners, promos } = useAdminStore();
     const [isAddingChallenge, setIsAddingChallenge] = useState(false);
     const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
 

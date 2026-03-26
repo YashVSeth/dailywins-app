@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Ticket, Building2, Info, Tag, Calendar, ChevronRight, Loader2, Search, Download, Plus, Filter, MoreHorizontal, ChevronLeft, LayoutGrid, Trash2 } from 'lucide-react';
 
+import { useAdminStore } from '../store/useAdminStore';
+
 export default function Coupons({
-    stats,
-    partners,
-    promos,
     promoFormData,
     setPromoFormData,
     createPromo,
@@ -13,6 +12,7 @@ export default function Coupons({
     updatePromoStatus,
     deletePromo
 }) {
+    const { promos, partners } = useAdminStore();
     const [isAddingCoupon, setIsAddingCoupon] = useState(false);
     const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
 

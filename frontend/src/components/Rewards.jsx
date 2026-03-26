@@ -4,8 +4,9 @@ import { Target, Phone, Loader2, ChevronRight, Check, Building2, MessageCircle, 
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+import { useAdminStore } from '../store/useAdminStore';
+
 export default function Rewards({
-    challenges,
     rewardFormData,
     setRewardFormData,
     generateReward: parentGenerateReward,
@@ -14,6 +15,7 @@ export default function Rewards({
     generatedCouponId,
     generatedQrCode
 }) {
+    const { challenges } = useAdminStore();
     const [todaysRewards, setTodaysRewards] = useState([]);
     const [loadingRewards, setLoadingRewards] = useState(true);
 

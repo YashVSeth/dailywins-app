@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Store, Download, Plus, MapPin, Building2, X, ChevronRight, ChevronLeft, Filter, MoreHorizontal, Loader2, Key, User, Trash2 } from 'lucide-react';
 
+import { useAdminStore } from '../store/useAdminStore';
+
 export default function Businesses({ 
-    stats,
-    partners, 
-    promos, 
     isAddingBusiness, 
     setIsAddingBusiness, 
     partnerFormData, 
@@ -15,6 +14,7 @@ export default function Businesses({
     updatePartnerStatus,
     deletePartner
 }) {
+    const { stats, partners, promos } = useAdminStore();
     const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
     const [activateModalOpenFor, setActivateModalOpenFor] = useState(null);
     const [portalCreds, setPortalCreds] = useState({ id: '', password: '' });

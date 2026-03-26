@@ -132,7 +132,7 @@ export default function PartnerDashboard() {
                           <p className="text-sm text-slate-400">Awarded: <span className="text-slate-300 font-medium">{scan.challenge?.title}</span></p>
                        </div>
                        <div className="text-sm text-slate-500 font-mono">
-                          {new Date(scan.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(scan.redeemedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                        </div>
                     </div>
                  ))

@@ -11,7 +11,6 @@ export default function PartnerDashboard() {
   const [partner, setPartner] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showScanner, setShowScanner] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,24 +46,6 @@ export default function PartnerDashboard() {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
-      </div>
-    );
-  }
-
-  // If scanner is active, overlay it
-  if (showScanner) {
-    return (
-      <div className="min-h-screen bg-slate-900">
-        <div className="p-4 flex items-center justify-between border-b border-white/10 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-          <button 
-            onClick={() => setShowScanner(false)}
-            className="text-slate-400 hover:text-white font-medium text-sm"
-          >
-            ← Back to Dashboard
-          </button>
-          <img src={logo} alt="Logo" className="h-8 w-8 object-contain" />
-        </div>
-        <Scanner onClose={() => setShowScanner(false)} partner={partner} />
       </div>
     );
   }
@@ -106,7 +87,7 @@ export default function PartnerDashboard() {
            </div>
            
            <button
-              onClick={() => setShowScanner(true)}
+              onClick={() => navigate('/scanner')}
               className="relative z-10 flex items-center justify-center gap-3 bg-white text-indigo-600 hover:bg-slate-50 w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg active:scale-95 group"
            >
               <QrCode className="w-6 h-6 group-hover:scale-110 transition-transform" /> 

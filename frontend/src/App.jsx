@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Scanner from './components/Scanner';
 import axios from 'axios';
 import { CheckCircle2, XCircle, Loader2, ScanLine } from 'lucide-react';
-import { Navigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/coupons/redeem`;
 
@@ -12,6 +11,7 @@ export default function App() {
   const [resultMessage, setResultMessage] = useState('');
   const [userData, setUserData] = useState(null);
   const [resumeScanner, setResumeScanner] = useState(null);
+  const navigate = useNavigate();
 
   // AUTH CHECK
   const [auth, setAuth] = useState(null);
@@ -25,11 +25,6 @@ export default function App() {
 
   if (authChecking) return <div className="min-h-screen bg-slate-900 flex items-center justify-center"><Loader2 className="w-10 h-10 text-indigo-500 animate-spin" /></div>;
   if (!auth) return <Navigate to="/login" replace />;
-
-  const handleLogout = () => {
-     localStorage.removeItem('partnerAuth');
-     setAuth(null);
-  };
 
   const handleScanSuccess = async (decodedText, decodedResult, resumeCallback) => {
     console.log(`Scan success: ${decodedText}`);
@@ -72,10 +67,10 @@ export default function App() {
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/30 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/30 blur-[120px] rounded-full pointer-events-none"></div>
 
-      {/* Logout Navigation */}
-      <div className="absolute top-4 right-4 z-50">
-         <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 rounded-xl text-sm font-medium transition-colors text-slate-300 hover:text-white backdrop-blur-md">
-            <LogOut className="w-4 h-4 text-emerald-400" /> Logout ({auth.name})
+      {/* Back Navigation */}
+      <div className="absolute top-4 left-4 z-50">
+         <button onClick={() => navigate('/partner/dashboard')} className="flex items-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 rounded-xl text-sm font-medium transition-colors text-slate-300 hover:text-white backdrop-blur-md">
+            ← Back to Dashboard
          </button>
       </div>
 

@@ -49,6 +49,9 @@ app.use('/api/challenges', challengeRoutes);
 const statsRoutes = require('./routes/statsRoutes');
 app.use('/api/stats', statsRoutes);
 
+// Start Cron Jobs
+require('./scripts/cleanup');
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

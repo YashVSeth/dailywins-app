@@ -115,7 +115,7 @@ export default function PartnerDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
            <div className="bg-slate-800/40 border border-white/5 p-5 rounded-2xl">
               <div className="text-emerald-400 mb-2">
                  <Users className="w-6 h-6" />
@@ -124,13 +124,6 @@ export default function PartnerDashboard() {
               <p className="text-sm text-slate-400 mt-1 font-medium">Scans Today</p>
            </div>
            <div className="bg-slate-800/40 border border-white/5 p-5 rounded-2xl">
-              <div className="text-blue-400 mb-2">
-                 <Target className="w-6 h-6" />
-              </div>
-              <p className="text-3xl font-black text-white">{stats?.activeChallenges || 0}</p>
-              <p className="text-sm text-slate-400 mt-1 font-medium">Active Challenges</p>
-           </div>
-           <div className="bg-slate-800/40 border border-white/5 p-5 rounded-2xl col-span-2 sm:col-span-1">
               <div className="text-purple-400 mb-2">
                  <TrendingUp className="w-6 h-6" />
               </div>

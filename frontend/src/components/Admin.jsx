@@ -5,7 +5,7 @@ import {
   Loader2, LogOut, LayoutDashboard, Store, Ticket, Gift, Settings, 
   Search, Bell, HelpCircle, Users, DollarSign, ChevronRight, BarChart,
   Building2, Info, Tag, Calendar, Target, Award, Medal, CheckCircle2, PlusCircle,
-  Download, Plus, MapPin, X, Filter, MoreHorizontal, ChevronLeft
+  Download, Plus, MapPin, X, Filter, MoreHorizontal, ChevronLeft, FileDown
 } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 import Businesses from './Businesses';
@@ -166,6 +166,23 @@ const Admin = () => {
     }
   };
 
+  const downloadReport = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/stats/report`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `DailyWins_Report_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error downloading report:', err);
+      alert('Failed to generate report. Please try again.');
+    }
+  };
+
   const createPromo = async (e) => {
     e.preventDefault();
     setPromoLoading(true); setPromoMessage('');
@@ -291,6 +308,20 @@ const Admin = () => {
            {activeTab === 'dashboard' && (
              <div className="w-full space-y-6">
                 
+                {/* Dashboard Header with Generate Report */}
+                <div className="flex items-center justify-between">
+                   <div>
+                      <h2 className="text-white text-2xl font-black tracking-tight">Overview</h2>
+                      <p className="text-slate-500 text-sm">Real-time platform analytics</p>
+                   </div>
+                   <button
+                      onClick={downloadReport}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-sm font-bold transition-colors"
+                   >
+                      <FileDown className="w-4 h-4" /> Generate Report
+                   </button>
+                </div>
+
                 {/* 4 STAT CARDS */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                    <div className="bg-[#141E33]/20 border border-[#1E293B] p-6 rounded-[1.25rem] flex flex-col justify-between">

@@ -67,3 +67,63 @@ exports.getStats = async (req, res) => {
     res.status(500).json({ message: 'Server error retrieving stats' });
   }
 };
+
+// Generate downloadable CSV report
+exports.generateReport = async (req, res) => {
+  try {
+    const Coupon = require('../models/Coupon');
+    const coupons = await Coupon.find()
+      .populate('user', 'phoneNumber name')
+      .populate('partner', 'name')
+      .populate('challenge', 'title')
+      .sort({ issuedAt: -1 });
+
+    const partners = await Partner.find().select('name status createdAt');
+    const challenges = await Challenge.find().select('title durationDays isActive createdAt');
+
+    // Build CSV
+    const lines = [];
+
+    // Section 1: Coupons
+    lines.push('=== COUPON REPORT ===');
+    lines.push('Coupon Code,User Phone,User Name,Partner,Challenge,Status,Issued At,Redeemed At');
+    coupons.forEach(c => {
+      const row = [
+        c.couponCode,
+        c.user?.phoneNumber || 'N/A',
+        c.user?.name || 'N/A',
+        c.partner?.name || 'N/A',
+        c.challenge?.title || c.challengeDescription || 'N/A',
+        c.status,
+        c.issuedAt ? c.issuedAt.toISOString() : '',
+        c.redeemedAt ? c.redeemedAt.toISOString() : ''
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`);
+      lines.push(row.join(','));
+    });
+
+    lines.push('');
+    lines.push('=== PARTNERS ===');
+    lines.push('Name,Status,Created At');
+    partners.forEach(p => {
+      lines.push(`"${p.name}","${p.status}","${p.createdAt ? p.createdAt.toISOString() : ''}"`);
+    });
+
+    lines.push('');
+    lines.push('=== CHALLENGES ===');
+    lines.push('Title,Duration (Days),Active,Created At');
+    challenges.forEach(ch => {
+      lines.push(`"${ch.title}","${ch.durationDays}","${ch.isActive !== false ? 'Yes' : 'No'}","${ch.createdAt ? ch.createdAt.toISOString() : ''}"`);
+    });
+
+    const csv = lines.join('\n');
+    const now = new Date().toISOString().split('T')[0];
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename=DailyWins_Report_${now}.csv`);
+    res.send(csv);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error generating report' });
+  }
+};

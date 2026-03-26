@@ -1,5 +1,9 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_dev_dailywins_2024';
+
 
 // Auto-seed default admin if none exist
 exports.seedDefaultAdmin = async () => {
@@ -37,8 +41,15 @@ exports.loginAdmin = async (req, res) => {
       return res.status(401).json({ message: 'Invalid Admin credentials' });
     }
 
+    const token = jwt.sign(
+      { id: admin._id, role: 'admin' },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
     res.json({
       message: 'Admin Login successful',
+      token,
       admin: {
          id: admin._id,
          username: admin.username

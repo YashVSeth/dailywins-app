@@ -1,5 +1,9 @@
 const Partner = require('../models/Partner');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_dev_dailywins_2024';
+
 
 // GET all partners (for the dropdown list)
 exports.getAllPartners = async (req, res) => {
@@ -74,10 +78,15 @@ exports.loginPartner = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // In a full production app, you'd issue a JWT here. 
-    // For this prototype, we'll return a simple token/partner object to store in frontend.
+    const token = jwt.sign(
+      { id: partner._id, role: 'partner' },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
     res.json({
       message: 'Login successful',
+      token,
       partner: {
          id: partner._id,
          name: partner.name,

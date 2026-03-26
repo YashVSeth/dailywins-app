@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const challengeController = require('../controllers/challengeController');
+const { requireAdmin } = require('../middleware/authMiddleware');
 
-router.get('/', challengeController.getAllChallenges);
-router.post('/register', challengeController.createChallenge);
-router.delete('/:id', challengeController.deleteChallenge);
+router.get('/', requireAdmin, challengeController.getAllChallenges);
+router.post('/register', requireAdmin, challengeController.createChallenge);
+router.delete('/:id', requireAdmin, challengeController.deleteChallenge);
 
 module.exports = router;

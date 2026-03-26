@@ -20,7 +20,8 @@ const Login = () => {
     try {
       // 1. First, attempt to log in as a System Administrator
       const adminRes = await axios.post(`${API_BASE}/admin/login`, formData);
-      localStorage.setItem('adminAuth', JSON.stringify(adminRes.data.admin));
+      const adminData = { ...adminRes.data.admin, token: adminRes.data.token };
+      localStorage.setItem('adminAuth', JSON.stringify(adminData));
       navigate('/admin');
       return; // Exit successful admin block
     } catch (adminErr) {
@@ -29,7 +30,8 @@ const Login = () => {
       // 2. Fallback: attempt to log in as a Local Partner
       try {
          const partnerRes = await axios.post(`${API_BASE}/partners/login`, formData);
-         localStorage.setItem('partnerAuth', JSON.stringify(partnerRes.data.partner));
+         const partnerData = { ...partnerRes.data.partner, token: partnerRes.data.token };
+         localStorage.setItem('partnerAuth', JSON.stringify(partnerData));
          navigate('/scanner');
          return; // Exit successful partner block
       } catch (partnerErr) {

@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const partnerController = require('../controllers/partnerController');
+const { requireAdmin } = require('../middleware/authMiddleware');
 
-router.get('/', partnerController.getAllPartners);
-router.post('/register', partnerController.registerPartner);
+router.get('/', requireAdmin, partnerController.getAllPartners);
+router.post('/register', requireAdmin, partnerController.registerPartner);
 router.post('/login', partnerController.loginPartner);
-router.patch('/:id/status', partnerController.updateStatus);
-router.delete('/:id', partnerController.deletePartner);
+router.patch('/:id/status', requireAdmin, partnerController.updateStatus);
+router.delete('/:id', requireAdmin, partnerController.deletePartner);
 
 module.exports = router;

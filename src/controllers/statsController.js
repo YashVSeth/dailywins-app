@@ -71,7 +71,6 @@ exports.getStats = async (req, res) => {
 // Generate downloadable CSV report
 exports.generateReport = async (req, res) => {
   try {
-    const Coupon = require('../models/Coupon');
     const coupons = await Coupon.find()
       .populate('user', 'phoneNumber name')
       .populate('partner', 'name')

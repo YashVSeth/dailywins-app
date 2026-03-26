@@ -6,6 +6,7 @@ import Admin from './components/Admin.jsx'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import RewardPage from './components/RewardPage.jsx'
 import Login from './components/Login.jsx'
+import PartnerDashboard from './components/PartnerDashboard.jsx'
 import axios from 'axios'
 
 // Global Axios Interceptor for JWT Tokens
@@ -59,9 +60,10 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/scanner" replace />} />
+        <Route path="/" element={<Navigate to="/partner/dashboard" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/scanner" element={<App />} />
+        <Route path="/partner/dashboard" element={<PartnerDashboard />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/reward/:id" element={<RewardPage />} />
       </Routes>

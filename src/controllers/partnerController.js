@@ -1,4 +1,6 @@
 const Partner = require('../models/Partner');
+const Challenge = require('../models/Challenge');
+const Coupon = require('../models/Coupon');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -140,5 +142,54 @@ exports.deletePartner = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error deleting partner' });
+  }
+};
+
+// GET partner stats (for the Partner Dashboard)
+exports.getPartnerStats = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Optional: make sure the requester is viewing their own stats (if we trust the JWT middleware it's safe)
+
+    // 1. Get Active Challenges for this partner
+    const activeChallenges = await Challenge.countDocuments({
+      partner: id,
+      isActive: true
+    });
+
+    // 2. Get today's coupon scans
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const todaysScans = await Coupon.countDocuments({
+      partner: id,
+      status: 'Redeemed',
+      updatedAt: { $gte: startOfDay }
+    });
+
+    // 3. Get total lifetime scans
+    const totalScans = await Coupon.countDocuments({
+      partner: id,
+      status: 'Redeemed'
+    });
+
+    // 4. Get 5 most recent scans
+    const recentScans = await Coupon.find({ partner: id, status: 'Redeemed' })
+      .populate('user', 'phoneNumber name')
+      .populate('challenge', 'title')
+      .sort({ updatedAt: -1 })
+      .limit(5);
+
+    res.json({
+      activeChallenges,
+      todaysScans,
+      totalScans,
+      recentScans
+    });
+
+  } catch (error) {
+    console.error('Error fetching partner stats:', error);
+    res.status(500).json({ message: 'Server error fetching partner stats' });
   }
 };

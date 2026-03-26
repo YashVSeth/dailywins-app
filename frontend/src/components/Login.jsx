@@ -32,7 +32,7 @@ const Login = () => {
          const partnerRes = await axios.post(`${API_BASE}/partners/login`, formData);
          const partnerData = { ...partnerRes.data.partner, token: partnerRes.data.token };
          localStorage.setItem('partnerAuth', JSON.stringify(partnerData));
-         navigate('/scanner');
+         navigate('/partner/dashboard');
          return; // Exit successful partner block
       } catch (partnerErr) {
          // Both logins failed. Display an explicit error.

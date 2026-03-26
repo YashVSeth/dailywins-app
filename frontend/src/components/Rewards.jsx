@@ -1,18 +1,47 @@
-import React from 'react';
-import { Target, Phone, Loader2, ChevronRight, Check, Building2, MessageCircle, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Target, Phone, Loader2, ChevronRight, Check, Building2, MessageCircle, ExternalLink, Gift, MoreHorizontal } from 'lucide-react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function Rewards({
     challenges,
     rewardFormData,
     setRewardFormData,
-    generateReward,
+    generateReward: parentGenerateReward,
     rewardLoading,
     rewardMessage,
     generatedCouponId,
     generatedQrCode
 }) {
+    const [todaysRewards, setTodaysRewards] = useState([]);
+    const [loadingRewards, setLoadingRewards] = useState(true);
+
     // Only show active (non-expired) challenges
     const activeChallenges = (challenges || []).filter(c => c.isActive !== false);
+
+    const fetchTodaysRewards = async () => {
+        try {
+            setLoadingRewards(true);
+            const res = await axios.get(`${API_BASE}/coupons/today`);
+            setTodaysRewards(res.data);
+        } catch (err) {
+            console.error('Error fetching today\'s rewards:', err);
+        } finally {
+            setLoadingRewards(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchTodaysRewards();
+    }, []);
+
+    // Refresh list after generating a new reward
+    useEffect(() => {
+        if (generatedCouponId) {
+            fetchTodaysRewards();
+        }
+    }, [generatedCouponId]);
 
     // Build WhatsApp URL
     const getWhatsAppUrl = () => {
@@ -32,7 +61,7 @@ export default function Rewards({
                 <p className="text-slate-400 text-sm">Select an active challenge and provide the customer's WhatsApp number to send them a reward link.</p>
             </div>
             
-            <form onSubmit={generateReward} className="space-y-6">
+            <form onSubmit={parentGenerateReward} className="space-y-6">
                 
                 {/* Challenge Selection Card */}
                 <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-[1rem] p-6 space-y-6">
@@ -168,6 +197,72 @@ export default function Rewards({
                     </div>
                 )}
             </form>
+
+            {/* TODAY'S REWARDS TABLE */}
+            <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl overflow-hidden mt-10">
+                <div className="px-6 py-4 flex items-center justify-between border-b border-[#1E293B]/50 gap-4">
+                    <div className="flex items-center gap-3">
+                        <Gift className="w-5 h-5 text-yellow-400" />
+                        <h3 className="text-white font-bold text-sm">Today's Generated Rewards</h3>
+                        <span className="text-[10px] font-black text-slate-500 bg-[#0B1120] px-2.5 py-1 rounded-full border border-[#1E293B]">{todaysRewards.length}</span>
+                    </div>
+                    <button onClick={fetchTodaysRewards} className="text-slate-500 hover:text-white transition-colors text-xs font-bold">Refresh</button>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="border-b border-[#1E293B]/50 bg-[#0B1120]/50 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                <th className="px-6 py-4">Mobile No.</th>
+                                <th className="px-6 py-4 hidden sm:table-cell">Challenge</th>
+                                <th className="px-6 py-4 hidden md:table-cell">Partner</th>
+                                <th className="px-6 py-4">Time</th>
+                                <th className="px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loadingRewards ? (
+                                <tr>
+                                    <td colSpan="5" className="py-12 text-center">
+                                        <Loader2 className="w-6 h-6 text-blue-500 animate-spin mx-auto" />
+                                    </td>
+                                </tr>
+                            ) : todaysRewards.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="py-12 text-center text-slate-500 text-sm font-medium">No rewards generated today yet.</td>
+                                </tr>
+                            ) : (
+                                todaysRewards.map((r, i) => (
+                                    <tr key={r._id || i} className="border-b border-[#1E293B]/30 hover:bg-[#1E293B]/20 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                                                    <Phone className="w-4 h-4" />
+                                                </div>
+                                                <span className="text-white font-bold text-sm">{r.phoneNumber}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-slate-400 text-sm hidden sm:table-cell font-medium">{r.challenge}</td>
+                                        <td className="px-6 py-4 text-slate-400 text-sm hidden md:table-cell">
+                                            <div className="flex items-center gap-2"><Building2 className="w-3.5 h-3.5 text-slate-500" /> {r.partner}</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-slate-400 text-sm font-medium whitespace-nowrap">
+                                            {new Date(r.issuedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {r.status === 'Used' ? (
+                                                <span className="px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black tracking-widest uppercase">Redeemed</span>
+                                            ) : (
+                                                <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[9px] font-black tracking-widest uppercase">Active</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 }

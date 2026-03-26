@@ -12,6 +12,7 @@ router.get('/status/:code', couponController.checkStatus);
 router.post('/redeem', couponController.redeemCoupon);
 
 // 4. Fetch specific coupon (Public Link for WhatsApp)
+router.get('/today', couponController.getTodaysCoupons);
 router.get('/:id', couponController.getCouponById);
 
 module.exports = router;

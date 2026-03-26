@@ -174,3 +174,37 @@ exports.redeemCoupon = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error redeeming coupon' });
   }
 };
+
+// 4. Get today's generated coupons (Admin Rewards list)
+exports.getTodaysCoupons = async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const coupons = await Coupon.find({
+      issuedAt: { $gte: today, $lt: tomorrow }
+    })
+      .populate('user', 'phoneNumber name')
+      .populate('partner', 'name')
+      .populate('challenge', 'title')
+      .sort({ issuedAt: -1 });
+
+    const result = coupons.map(c => ({
+      _id: c._id,
+      phoneNumber: c.user?.phoneNumber || 'N/A',
+      userName: c.user?.name || 'N/A',
+      partner: c.partner?.name || 'N/A',
+      challenge: c.challenge?.title || c.challengeDescription || 'N/A',
+      status: c.status,
+      issuedAt: c.issuedAt,
+      redeemedAt: c.redeemedAt
+    }));
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error fetching today\'s coupons' });
+  }
+};

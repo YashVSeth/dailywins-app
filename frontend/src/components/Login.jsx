@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { User, KeyRound, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,15 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Prevent logged-in users from accessing the login screen
+    if (localStorage.getItem('adminAuth')) {
+       navigate('/admin', { replace: true });
+    } else if (localStorage.getItem('partnerAuth')) {
+       navigate('/partner/dashboard', { replace: true });
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -22,7 +31,7 @@ const Login = () => {
       const adminRes = await axios.post(`${API_BASE}/admin/login`, formData);
       const adminData = { ...adminRes.data.admin, token: adminRes.data.token };
       localStorage.setItem('adminAuth', JSON.stringify(adminData));
-      navigate('/admin');
+      navigate('/admin', { replace: true });
       return; // Exit successful admin block
     } catch (adminErr) {
       console.log(adminErr);
@@ -32,7 +41,7 @@ const Login = () => {
          const partnerRes = await axios.post(`${API_BASE}/partners/login`, formData);
          const partnerData = { ...partnerRes.data.partner, token: partnerRes.data.token };
          localStorage.setItem('partnerAuth', JSON.stringify(partnerData));
-         navigate('/partner/dashboard');
+         navigate('/partner/dashboard', { replace: true });
          return; // Exit successful partner block
       } catch (partnerErr) {
          // Both logins failed. Display an explicit error.

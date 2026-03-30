@@ -28,6 +28,13 @@ const Admin = () => {
      const stored = localStorage.getItem('adminAuth');
      if (stored) setAuth(JSON.parse(stored));
      setAuthChecking(false);
+
+     // Intercept hardware 'Back' button to prevent exiting the application unintentionally
+     window.history.pushState(null, '', window.location.href);
+     const handlePopState = () => window.history.pushState(null, '', window.location.href);
+     window.addEventListener('popstate', handlePopState);
+
+     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const handleLogout = () => {

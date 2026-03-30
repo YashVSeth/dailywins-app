@@ -14,6 +14,11 @@ export default function PartnerDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Intercept hardware 'Back' button to prevent exiting the application unintentionally
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handlePopState);
+
     const auth = localStorage.getItem('partnerAuth');
     if (!auth) {
       navigate('/login');
@@ -35,6 +40,8 @@ export default function PartnerDashboard() {
     };
 
     fetchStats();
+
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [navigate]);
 
   const handleLogout = () => {

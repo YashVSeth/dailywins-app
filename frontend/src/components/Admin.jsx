@@ -59,7 +59,7 @@ const Admin = () => {
   const [generatedQrCode, setGeneratedQrCode] = useState('');
   const [rewardMessage, setRewardMessage] = useState('');
 
-  const [partnerFormData, setPartnerFormData] = useState({ name: '', description: '', location: '', email: '', phoneNumber: '', username: '', password: '' });
+  const [partnerFormData, setPartnerFormData] = useState({ name: '', description: '', location: '', category: '', registrationNo: '', email: '', phoneNumber: '', username: '', password: '' });
   const [partnerLoading, setPartnerLoading] = useState(false);
   const [partnerMessage, setPartnerMessage] = useState('');
   const [isAddingBusiness, setIsAddingBusiness] = useState(false);

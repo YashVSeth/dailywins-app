@@ -18,6 +18,12 @@ export default function Businesses({
     const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
     const [activateModalOpenFor, setActivateModalOpenFor] = useState(null);
     const [portalCreds, setPortalCreds] = useState({ id: '', password: '' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
+    const pendingCount = (partners || []).filter(p => p.status === 'PENDING').length;
+    const totalPages = Math.max(1, Math.ceil((partners || []).length / ITEMS_PER_PAGE));
+    const paginatedPartners = (partners || []).slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
         <div className="w-full mt-4 pb-12 animate-in fade-in duration-300">
@@ -54,7 +60,7 @@ export default function Businesses({
                 <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
                     <h3 className="text-slate-400 text-xs font-bold mb-3">Verification Pending</h3>
                     <div className="flex items-end gap-3">
-                        <span className="text-white text-3xl font-black">0</span>
+                        <span className="text-white text-3xl font-black">{pendingCount}</span>
                     </div>
                 </div>
             </div>
@@ -91,17 +97,21 @@ export default function Businesses({
                                 <label className="block text-slate-300 text-xs font-bold mb-3">Physical Location</label>
                                 <div className="relative">
                                     <MapPin className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
-                                    <input type="text" placeholder="San Francisco, CA" className="w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl pl-11 pr-4 py-3.5 text-sm font-medium text-white focus:outline-none focus:border-yellow-500/50 transition-colors placeholder-[#334155]" />
+                                    <input type="text" placeholder="San Francisco, CA" value={partnerFormData.location} onChange={e=>setPartnerFormData({...partnerFormData, location: e.target.value})} className="w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl pl-11 pr-4 py-3.5 text-sm font-medium text-white focus:outline-none focus:border-yellow-500/50 transition-colors placeholder-[#334155]" />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-slate-300 text-xs font-bold mb-3">Category</label>
                                 <div className="relative">
-                                    <select className="appearance-none w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium text-slate-300 focus:outline-none focus:border-yellow-500/50 transition-colors">
-                                        <option>Retail & Wholesale</option>
-                                        <option>Software</option>
-                                        <option>E-commerce</option>
-                                        <option>Marketing</option>
+                                    <select value={partnerFormData.category} onChange={e=>setPartnerFormData({...partnerFormData, category: e.target.value})} className="appearance-none w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium text-slate-300 focus:outline-none focus:border-yellow-500/50 transition-colors">
+                                        <option value="">Select Category</option>
+                                        <option value="Retail & Wholesale">Retail & Wholesale</option>
+                                        <option value="Food & Beverage">Food & Beverage</option>
+                                        <option value="Health & Fitness">Health & Fitness</option>
+                                        <option value="Software">Software</option>
+                                        <option value="E-commerce">E-commerce</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                     <ChevronRight className="w-4 h-4 text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 rotate-90" />
                                 </div>
@@ -112,7 +122,7 @@ export default function Businesses({
                             </div>
                             <div>
                                 <label className="block text-slate-300 text-xs font-bold mb-3">Business Registration No.</label>
-                                <input type="text" placeholder="ID-993882-X" className="w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl px-4 py-3.5 text-sm font-medium text-white focus:outline-none focus:border-yellow-500/50 transition-colors placeholder-[#334155]" />
+                                <input type="text" placeholder="ID-993882-X" value={partnerFormData.registrationNo} onChange={e=>setPartnerFormData({...partnerFormData, registrationNo: e.target.value})} className="w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl px-4 py-3.5 text-sm font-medium text-white focus:outline-none focus:border-yellow-500/50 transition-colors placeholder-[#334155]" />
                             </div>
                             <div>
                                 <label className="block text-slate-300 text-xs font-bold mb-3">Phone Number</label>
@@ -155,7 +165,7 @@ export default function Businesses({
                             </tr>
                         </thead>
                         <tbody>
-                            {(partners || []).map((p, i) => (
+                            {paginatedPartners.map((p, i) => (
                                 <tr key={p._id || i} className="border-b border-[#1E293B]/30 hover:bg-[#1E293B]/20 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
@@ -229,14 +239,14 @@ export default function Businesses({
                 {/* Pagination */}
                 <div className="px-6 py-4 border-t border-[#1E293B]/50 flex items-center justify-between bg-[#0B1120]/30 flex-wrap gap-4">
                     <div className="text-slate-500 text-xs">
-                        Showing <span className="font-bold text-white">{partners?.length > 0 ? 1 : 0} - {partners?.length || 0}</span> of {partners?.length || 0} results
+                        Showing <span className="font-bold text-white">{(partners || []).length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0} - {Math.min(currentPage * ITEMS_PER_PAGE, (partners || []).length)}</span> of {(partners || []).length} results
                     </div>
                     <div className="flex items-center gap-2">
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-[#1E293B] transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#FACC15] text-yellow-950 font-bold text-xs">1</button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-[#1E293B] font-bold text-xs transition-colors">2</button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-[#1E293B] font-bold text-xs transition-colors">3</button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-[#1E293B] transition-colors"><ChevronRight className="w-4 h-4" /></button>
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-[#1E293B] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"><ChevronLeft className="w-4 h-4" /></button>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button key={page} onClick={() => setCurrentPage(page)} className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-xs transition-colors ${currentPage === page ? 'bg-[#FACC15] text-yellow-950' : 'text-slate-400 hover:text-white hover:bg-[#1E293B]'}`}>{page}</button>
+                        ))}
+                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-[#1E293B] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"><ChevronRight className="w-4 h-4" /></button>
                     </div>
                 </div>
             </div>

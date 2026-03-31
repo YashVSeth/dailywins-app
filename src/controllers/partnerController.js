@@ -3,6 +3,7 @@ const Challenge = require('../models/Challenge');
 const Coupon = require('../models/Coupon');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_dev_dailywins_2024';
 
@@ -181,11 +182,46 @@ exports.getPartnerStats = async (req, res) => {
       .sort({ redeemedAt: -1 })
       .limit(5);
 
+    // 5. Build 30-day active tracking window via Aggregation for this specific partner
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+    thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+    const aggResult = await Coupon.aggregate([
+        { $match: { partner: new mongoose.Types.ObjectId(id), issuedAt: { $gte: thirtyDaysAgo } } },
+        { $group: {
+             _id: { $dateToString: { format: "%Y-%m-%d", date: "$issuedAt" } },
+             issued: { $sum: 1 },
+             redeemed: { $sum: { $cond: [{ $eq: ["$status", "Used"] }, 1, 0] } }
+        }},
+        { $sort: { _id: 1 } }
+    ]);
+
+    const daysMap = new Map();
+    aggResult.forEach(item => daysMap.set(item._id, item));
+
+    const chartData = [];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const dataObj = daysMap.get(dateStr) || { issued: 0, redeemed: 0 };
+        
+        chartData.push({
+            name: `${months[d.getMonth()]} ${d.getDate()}`,
+            issued: dataObj.issued,
+            redeemed: dataObj.redeemed
+        });
+    }
+
     res.json({
       activeChallenges,
       todaysScans,
       totalScans,
-      recentScans
+      recentScans,
+      chartData
     });
 
   } catch (error) {

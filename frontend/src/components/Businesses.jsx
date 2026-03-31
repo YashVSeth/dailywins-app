@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Store, Download, Plus, MapPin, Building2, X, ChevronRight, ChevronLeft, Filter, MoreHorizontal, Loader2, Key, User, Trash2 } from 'lucide-react';
+import axios from 'axios';
+import { AreaChart, Area, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis } from 'recharts';
+import { Store, Download, Plus, MapPin, Building2, X, ChevronRight, ChevronLeft, Filter, MoreHorizontal, Loader2, Key, User, Trash2, BarChart } from 'lucide-react';
 
 import { useAdminStore } from '../store/useAdminStore';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function Businesses({ 
     isAddingBusiness, 
@@ -20,6 +24,27 @@ export default function Businesses({
     const [portalCreds, setPortalCreds] = useState({ id: '', password: '' });
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
+    
+    // Analytics Drawer State
+    const [analyticsDrawerOpenFor, setAnalyticsDrawerOpenFor] = useState(null);
+    const [partnerStats, setPartnerStats] = useState(null);
+    const [loadingStats, setLoadingStats] = useState(false);
+
+    const fetchAnalytics = async (partner) => {
+        setActionMenuOpenId(null);
+        setAnalyticsDrawerOpenFor(partner);
+        setLoadingStats(true);
+        try {
+            const res = await axios.get(`${API_BASE}/partners/${partner._id}/analytics`, {
+                headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminAuth'))?.token}` }
+            });
+            setPartnerStats(res.data);
+        } catch (e) {
+            console.error('Error fetching partner analytics', e);
+        } finally {
+            setLoadingStats(false);
+        }
+    };
 
     const pendingCount = (partners || []).filter(p => p.status === 'PENDING').length;
     const totalPages = Math.max(1, Math.ceil((partners || []).length / ITEMS_PER_PAGE));
@@ -198,7 +223,12 @@ export default function Businesses({
                                         </button>
                                         
                                         {actionMenuOpenId === p._id && (
-                                            <div className="absolute right-6 top-10 w-36 bg-[#0B1120] border border-[#1E293B] rounded-xl shadow-xl z-10 overflow-hidden text-left animate-in slide-in-from-top-2 duration-200">
+                                                <button 
+                                                    onClick={() => fetchAnalytics(p)}
+                                                    className="w-full px-4 py-2.5 text-xs font-bold text-blue-400 hover:bg-[#1E293B] transition-colors flex items-center gap-2"
+                                                >
+                                                    <BarChart className="w-3.5 h-3.5" /> View Analytics
+                                                </button>
                                                 <button 
                                                     onClick={() => {
                                                         setActionMenuOpenId(null);
@@ -299,6 +329,98 @@ export default function Businesses({
                         </div>
                     </div>
                 </div>
+            )}
+            {/* Analytics Sliding Drawer */}
+            {analyticsDrawerOpenFor && (
+                <>
+                    <div className="fixed inset-0 bg-[#0B1120]/80 backdrop-blur-sm z-40 animate-in fade-in duration-200" onClick={() => setAnalyticsDrawerOpenFor(null)} />
+                    <div className="fixed top-0 right-0 h-screen w-full md:w-[600px] bg-[#0B1120] border-l border-[#1E293B] z-50 animate-in slide-in-from-right duration-300 shadow-2xl overflow-y-auto">
+                        <div className="p-6 sm:p-8 flex flex-col h-full">
+                            <div className="flex items-center justify-between mb-8 flex-shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center">
+                                        <BarChart className="w-6 h-6 text-blue-500" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-white text-xl font-bold">{analyticsDrawerOpenFor.name}</h3>
+                                        <p className="text-slate-400 text-sm">Performance Drill-down</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setAnalyticsDrawerOpenFor(null)} className="text-slate-500 hover:text-white transition-colors bg-[#141E33] p-2 rounded-xl">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            {loadingStats ? (
+                                <div className="flex-1 flex items-center justify-center">
+                                    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                                </div>
+                            ) : partnerStats ? (
+                                <div className="space-y-6 flex-1">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-[1rem] p-5">
+                                            <p className="text-slate-500 text-xs font-bold tracking-wider uppercase mb-2">Lifetime Scans</p>
+                                            <p className="text-white text-3xl font-black">{partnerStats.totalScans || 0}</p>
+                                        </div>
+                                        <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-[1rem] p-5">
+                                            <p className="text-slate-500 text-xs font-bold tracking-wider uppercase mb-2">Active Promos</p>
+                                            <p className="text-white text-3xl font-black">{partnerStats.activeChallenges || 0}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-[1rem] p-6">
+                                        <h4 className="text-white font-bold text-sm mb-6">30-Day Conversion Funnel</h4>
+                                        <div className="h-[200px] w-full -ml-4">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <AreaChart data={partnerStats.chartData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+                                                    <defs>
+                                                        <linearGradient id="colorIssuedDrawer" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#0E62E4" stopOpacity={0.4}/>
+                                                            <stop offset="95%" stopColor="#0E62E4" stopOpacity={0}/>
+                                                        </linearGradient>
+                                                        <linearGradient id="colorRedeemedDrawer" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#10B981" stopOpacity={0.4}/>
+                                                            <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 10, fontWeight: 700}} dy={10} minTickGap={30} />
+                                                    <RechartsTooltip contentStyle={{ backgroundColor: '#0F172A', borderColor: '#1E293B', borderRadius: '12px', color: '#fff', fontWeight: 'bold' }} itemStyle={{ color: '#fff' }} cursor={{ stroke: '#1E293B', strokeWidth: 1 }} />
+                                                    <Area type="monotone" dataKey="issued" name="Coupons Issued" stroke="#0E62E4" strokeWidth={3} fillOpacity={1} fill="url(#colorIssuedDrawer)" />
+                                                    <Area type="monotone" dataKey="redeemed" name="Coupons Redeemed" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorRedeemedDrawer)" />
+                                                </AreaChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-[1rem] p-6 flex-1">
+                                        <h4 className="text-white font-bold text-sm mb-4">Recent Customers</h4>
+                                        {(!partnerStats.recentScans || partnerStats.recentScans.length === 0) ? (
+                                            <div className="text-center py-8 text-slate-500 text-sm">No recent scans to show.</div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {partnerStats.recentScans.map((scan, idx) => (
+                                                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-[#0B1120] border border-[#1E293B]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 font-bold flex items-center justify-center text-xs">{(span => scan.user?.name?.charAt(0) || 'U')()}</div>
+                                                            <div>
+                                                                <p className="text-white text-sm font-bold">{scan.user?.phoneNumber || 'Unknown User'}</p>
+                                                                <p className="text-slate-500 text-[10px]">{scan.challenge?.title || 'General Reward'}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-emerald-500 text-xs font-black">SCAN</p>
+                                                            <p className="text-slate-500 text-[10px]">{new Date(scan.redeemedAt).toLocaleDateString()}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

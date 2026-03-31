@@ -195,10 +195,10 @@ export default function Businesses({
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-black text-xs ${p.color || 'bg-emerald-500/10 text-emerald-500'}`}>
-                                                {p.initials || p.name.substring(0, 2).toUpperCase()}
+                                                {p.initials || (p.name ? p.name.substring(0, 2).toUpperCase() : 'NA')}
                                             </div>
                                             <div>
-                                                <div className="text-white font-bold text-sm mb-0.5 whitespace-nowrap">{p.name}</div>
+                                                <div className="text-white font-bold text-sm mb-0.5 whitespace-nowrap">{p.name || 'Unnamed Business'}</div>
                                                 <div className="text-slate-500 text-[11px]">ID: B-0012{9+i}</div>
                                             </div>
                                         </div>
@@ -223,6 +223,7 @@ export default function Businesses({
                                         </button>
                                         
                                         {actionMenuOpenId === p._id && (
+                                            <div className="absolute right-6 top-10 w-36 bg-[#0B1120] border border-[#1E293B] rounded-xl shadow-xl z-10 overflow-hidden text-left animate-in slide-in-from-top-2 duration-200">
                                                 <button 
                                                     onClick={() => fetchAnalytics(p)}
                                                     className="w-full px-4 py-2.5 text-xs font-bold text-blue-400 hover:bg-[#1E293B] transition-colors flex items-center gap-2"

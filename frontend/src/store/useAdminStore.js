@@ -6,6 +6,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 export const useAdminStore = create((set, get) => ({
   // State
   businesses: [],
+  partners: [], // Aliased state for compatibility across components
   coupons: [],
   challenges: [],
   promos: [],
@@ -25,8 +26,10 @@ export const useAdminStore = create((set, get) => ({
   fetchBusinesses: async () => {
     set((state) => ({ loading: { ...state.loading, businesses: true } }));
     try {
-      const res = await axios.get(`${API_BASE}/partners`);
-      set({ businesses: res.data });
+      const res = await axios.get(`${API_BASE}/partners`, {
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminAuth'))?.token}` }
+      });
+      set({ businesses: res.data, partners: res.data });
     } catch (err) {
       console.error('Error fetching businesses:', err);
     } finally {

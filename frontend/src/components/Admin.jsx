@@ -24,23 +24,25 @@ const Admin = () => {
   const [auth, setAuth] = useState(null);
   const [authChecking, setAuthChecking] = useState(true);
 
+  const handleLogout = () => {
+     localStorage.removeItem('adminAuth');
+     setAuth(null);
+  };
+
   useEffect(() => {
      const stored = localStorage.getItem('adminAuth');
      if (stored) setAuth(JSON.parse(stored));
      setAuthChecking(false);
 
-     // Intercept hardware 'Back' button to prevent exiting the application unintentionally
+     // Treat hardware 'Back' button as an explicit logout action for security
      window.history.pushState(null, '', window.location.href);
-     const handlePopState = () => window.history.pushState(null, '', window.location.href);
+     const handlePopState = () => {
+         handleLogout();
+     };
      window.addEventListener('popstate', handlePopState);
 
      return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
-  const handleLogout = () => {
-     localStorage.removeItem('adminAuth');
-     setAuth(null);
-  };
   
   // -- GLOBAL DATA (from Zustand) --
   const { 

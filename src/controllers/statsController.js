@@ -11,25 +11,37 @@ exports.getStats = async (req, res) => {
     const totalChallenges = await Challenge.countDocuments();
     const totalUsers = await User.countDocuments();
 
-    const today = new Date();
-    today.setHours(0,0,0,0);
+    // Build 30-day active tracking window via Aggregation
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+    thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+    const aggResult = await Coupon.aggregate([
+        { $match: { issuedAt: { $gte: thirtyDaysAgo } } },
+        { $group: {
+             _id: { $dateToString: { format: "%Y-%m-%d", date: "$issuedAt" } },
+             issued: { $sum: 1 },
+             redeemed: { $sum: { $cond: [{ $eq: ["$status", "Used"] }, 1, 0] } }
+        }},
+        { $sort: { _id: 1 } }
+    ]);
+
+    const daysMap = new Map();
+    aggResult.forEach(item => daysMap.set(item._id, item));
+
     const chartData = [];
-    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    
-    // Build 7-day moving window for Chart
-    for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date();
         d.setDate(d.getDate() - i);
-        const nextDay = new Date(d);
-        nextDay.setDate(d.getDate() + 1);
-
-        const count = await Coupon.countDocuments({
-            issuedAt: { $gte: d, $lt: nextDay }
-        });
-
+        const dateStr = d.toISOString().split('T')[0];
+        const dataObj = daysMap.get(dateStr) || { issued: 0, redeemed: 0 };
+        
         chartData.push({
-            name: days[d.getDay()],
-            value: count
+            name: `${months[d.getMonth()]} ${d.getDate()}`,
+            issued: dataObj.issued,
+            redeemed: dataObj.redeemed
         });
     }
 

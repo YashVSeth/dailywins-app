@@ -369,19 +369,24 @@ const Admin = () => {
                       </div>
                       
                       <div className="h-[280px] w-full -ml-3">
-                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-                               <defs>
-                                  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                     <stop offset="5%" stopColor="#0E62E4" stopOpacity={0.4}/>
-                                     <stop offset="95%" stopColor="#0E62E4" stopOpacity={0}/>
-                                  </linearGradient>
-                               </defs>
-                               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 11, fontWeight: 700}} dy={15} />
-                               <RechartsTooltip contentStyle={{ backgroundColor: '#0F172A', borderColor: '#1E293B', borderRadius: '12px', color: '#fff', fontWeight: 'bold' }} itemStyle={{ color: '#38bdf8' }} cursor={{ stroke: '#1E293B', strokeWidth: 1 }} />
-                               <Area type="monotone" dataKey="value" stroke="#0E62E4" strokeWidth={4} fillOpacity={1} fill="url(#colorValue)" />
-                            </AreaChart>
-                         </ResponsiveContainer>
+                          <ResponsiveContainer width="100%" height="100%">
+                             <AreaChart data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+                                <defs>
+                                   <linearGradient id="colorIssued" x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor="#0E62E4" stopOpacity={0.4}/>
+                                      <stop offset="95%" stopColor="#0E62E4" stopOpacity={0}/>
+                                   </linearGradient>
+                                   <linearGradient id="colorRedeemed" x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.4}/>
+                                      <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                                   </linearGradient>
+                                </defs>
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 10, fontWeight: 700}} dy={15} minTickGap={30} />
+                                <RechartsTooltip contentStyle={{ backgroundColor: '#0F172A', borderColor: '#1E293B', borderRadius: '12px', color: '#fff', fontWeight: 'bold' }} itemStyle={{ color: '#fff' }} cursor={{ stroke: '#1E293B', strokeWidth: 1 }} />
+                                <Area type="monotone" dataKey="issued" name="Coupons Issued" stroke="#0E62E4" strokeWidth={3} fillOpacity={1} fill="url(#colorIssued)" />
+                                <Area type="monotone" dataKey="redeemed" name="Coupons Redeemed" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorRedeemed)" />
+                             </AreaChart>
+                          </ResponsiveContainer>
                       </div>
                    </div>
 

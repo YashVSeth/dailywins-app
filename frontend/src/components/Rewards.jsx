@@ -47,7 +47,7 @@ export default function Rewards({
 
     // Build WhatsApp URL
     const getWhatsAppUrl = () => {
-        const phone = rewardFormData.phoneNumber.replace(/[\s\-\(\)]/g, '');
+        const phone = rewardFormData.phoneNumber.replace(/[\s\-()]/g, '');
         const rewardLink = `${window.location.origin}/reward/${generatedCouponId}`;
         const message = `🎉 Congratulations! You've earned a reward!\n\nClick below to view your exclusive coupon:\n${rewardLink}\n\nShow this QR code at the store to redeem your discount. 🛍️`;
         return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;

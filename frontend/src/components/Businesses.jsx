@@ -402,7 +402,7 @@ export default function Businesses({
                                                 {partnerStats.recentScans.map((scan, idx) => (
                                                     <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-[#0B1120] border border-[#1E293B]">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 font-bold flex items-center justify-center text-xs">{(span => scan.user?.name?.charAt(0) || 'U')()}</div>
+                                                            <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 font-bold flex items-center justify-center text-xs">{(() => scan.user?.name?.charAt(0) || 'U')()}</div>
                                                             <div>
                                                                 <p className="text-white text-sm font-bold">{scan.user?.phoneNumber || 'Unknown User'}</p>
                                                                 <p className="text-slate-500 text-[10px]">{scan.challenge?.title || 'General Reward'}</p>

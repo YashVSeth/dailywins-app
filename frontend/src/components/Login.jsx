@@ -43,8 +43,9 @@ const Login = () => {
          localStorage.setItem('partnerAuth', JSON.stringify(partnerData));
          navigate('/partner/dashboard', { replace: true });
          return; // Exit successful partner block
-      } catch (partnerErr) {
+      } catch (err) {
          // Both logins failed. Display an explicit error.
+         console.warn(err); // consume err silently
          setError('Invalid Username or Password');
       }
     } finally {

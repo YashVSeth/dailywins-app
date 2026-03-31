@@ -19,6 +19,7 @@ export default function App() {
 
   useEffect(() => {
      const stored = localStorage.getItem('partnerAuth');
+     // eslint-disable-next-line react-hooks/exhaustive-deps
      if (stored) setAuth(JSON.parse(stored));
      setAuthChecking(false);
   }, []);

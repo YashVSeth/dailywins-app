@@ -12,7 +12,7 @@ import Businesses from './Businesses';
 import Coupons from './Coupons';
 import Challenges from './Challenges';
 import Rewards from './Rewards';
-import Settings from './Settings';
+import SettingsPanel from './Settings';
 import logo from '../assets/logo.png';
 import { useAdminStore } from '../store/useAdminStore';
 
@@ -488,7 +488,7 @@ const Admin = () => {
            {activeTab === 'coupons' && <Coupons promoFormData={promoFormData} setPromoFormData={setPromoFormData} createPromo={createPromo} promoLoading={promoLoading} promoMessage={promoMessage} updatePromoStatus={updatePromoStatus} deletePromo={deletePromo} />}
            {activeTab === 'challenges' && <Challenges challengeFormData={challengeFormData} setChallengeFormData={setChallengeFormData} registerChallenge={registerChallenge} challengeLoading={challengeLoading} challengeMessage={challengeMessage} deleteChallenge={deleteChallenge} />}
            {activeTab === 'rewards' && <Rewards rewardFormData={rewardFormData} setRewardFormData={setRewardFormData} generateReward={generateReward} rewardLoading={rewardLoading} rewardMessage={rewardMessage} generatedCouponId={generatedCouponId} generatedQrCode={generatedQrCode} />}
-           {activeTab === 'settings' && <Settings />}
+           {activeTab === 'settings' && <SettingsPanel />}
 
         </div>
       </main>

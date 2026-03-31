@@ -15,7 +15,12 @@ export default function Settings() {
     const [autoApprove, setAutoApprove] = useState(false);
 
     // Profile Metadata
-    const adminData = JSON.parse(localStorage.getItem('adminAuth')) || {};
+    let adminData = {};
+    try {
+        adminData = JSON.parse(localStorage.getItem('adminAuth')) || {};
+    } catch (e) {
+        console.warn('Failed to parse admin data', e);
+    }
 
     const handlePasswordUpdate = async (e) => {
         e.preventDefault();
@@ -30,7 +35,7 @@ export default function Settings() {
 
         setPwdLoading(true);
         try {
-            const res = await axios.patch(`${API_BASE}/admin/password`, {
+            await axios.patch(`${API_BASE}/admin/password`, {
                 currentPassword: pwdData.currentPassword,
                 newPassword: pwdData.newPassword
             }, {

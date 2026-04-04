@@ -18,7 +18,7 @@ axios.interceptors.request.use((config) => {
     try {
       const parsed = JSON.parse(adminAuth);
       if (parsed.token) token = parsed.token;
-    } catch (e) {}
+    } catch (e) { console.warn('Failed admin parse', e); }
   }
 
   if (!token) {
@@ -27,7 +27,7 @@ axios.interceptors.request.use((config) => {
       try {
         const parsed = JSON.parse(partnerAuth);
         if (parsed.token) token = parsed.token;
-      } catch (e) {}
+      } catch (e) { console.warn('Failed admin parse', e); }
     }
   }
 

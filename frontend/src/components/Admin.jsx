@@ -405,23 +405,8 @@ const Admin = () => {
                         {/* Quick Actions & System Health */}
                         <div className="xl:col-span-1 flex flex-col gap-6">
 
-                           <div className="bg-[#141E33]/20 border border-[#1E293B] rounded-[1.25rem] p-6 flex-1 flex flex-col">
-                              <h2 className="text-white text-lg font-bold mb-6">Quick Actions</h2>
-                              <div className="space-y-3 flex-1 flex flex-col justify-center">
-                                 <button onClick={() => setActiveTab('businesses')} className="w-full bg-[#0E62E4] hover:bg-[#0E62E4]/90 text-white rounded-xl py-3.5 px-5 flex items-center justify-between font-bold text-sm transition-transform active:scale-[0.98] shadow-lg shadow-blue-500/20">
-                                    <span className="flex items-center gap-3"><Store className="w-5 h-5 bg-white/20 p-1 rounded-md" /> Add New Business</span>
-                                    <ChevronRight className="w-4 h-4 text-blue-200" />
-                                 </button>
-                                 <button onClick={() => setActiveTab('coupons')} className="w-full bg-[#F97316] hover:bg-[#F97316]/90 text-white rounded-xl py-3.5 px-5 flex items-center justify-between font-bold text-sm transition-transform active:scale-[0.98] shadow-lg shadow-orange-500/20">
-                                    <span className="flex items-center gap-3"><Ticket className="w-5 h-5 bg-white/20 p-1 rounded-md" /> Create New Coupon</span>
-                                    <ChevronRight className="w-4 h-4 text-orange-200" />
-                                 </button>
-                                 <button className="w-full bg-[#141E33] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 rounded-xl py-3.5 px-5 flex items-center justify-between font-bold text-sm transition-transform active:scale-[0.98]">
-                                    <span className="flex items-center gap-3"><BarChart className="w-5 h-5 bg-[#0B1120] p-1 rounded-md text-slate-400" /> Generate Report</span>
-                                    <ChevronRight className="w-4 h-4 text-slate-500" />
-                                 </button>
-                              </div>
-                           </div>
+
+
 
                            <div className="bg-[#141E33]/20 border border-[#1E293B] rounded-[1.25rem] p-6 lg:mb-auto">
                               <div className="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-3">SYSTEM HEALTH</div>

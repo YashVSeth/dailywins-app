@@ -278,8 +278,8 @@ const Admin = () => {
             <header className="lg:hidden h-20 px-4 md:px-8 flex items-center justify-between border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
 
                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 flex items-center justify-center overflow-hidden shrink-0">
-                     <img src={logo} alt="DailyWins Trophy" className="w-[160%] h-[160%] max-w-none object-contain" />
+                  <div className="w-9 h-9 flex items-center justify-center overflow-hidden shrink-0">
+                     <img src={logo} alt="DailyWins Trophy" className="w-[170%] h-[170%] max-w-none object-contain" />
                   </div>
                   <h1 className="font-extrabold text-xl leading-tight tracking-tight drop-shadow-md">
                      <span className="text-blue-500">Daily</span><span className="text-yellow-400">Wins</span>

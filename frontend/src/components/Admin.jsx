@@ -277,7 +277,7 @@ const Admin = () => {
             {/* TOP NAV */}
             <header className="lg:hidden h-20 px-4 md:px-8 flex items-center justify-between border-b border-[#1E293B] bg-[#0B1120] flex-shrink-0">
 
-               <div className="flex items-center gap-3">
+               <div className="flex items-center gap-1.5">
                   <div className="w-10 h-10 flex items-center justify-center overflow-hidden shrink-0">
                      <img src={logo} alt="DailyWins Trophy" className="w-[180%] h-[180%] max-w-none object-contain" />
                   </div>

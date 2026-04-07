@@ -27,6 +27,32 @@ export default function App() {
   if (authChecking) return <div className="min-h-screen bg-slate-900 flex items-center justify-center"><Loader2 className="w-10 h-10 text-indigo-500 animate-spin" /></div>;
   if (!auth) return <Navigate to="/login" replace />;
 
+  const handleLogout = () => {
+     localStorage.removeItem('partnerAuth');
+     setAuth(null);
+  };
+
+  // 20-minute inactivity timer
+  useEffect(() => {
+     let timeoutId;
+     const resetTimer = () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+           handleLogout();
+        }, 20 * 60 * 1000); // 20 minutes
+     };
+
+     const events = ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll'];
+     events.forEach(event => window.addEventListener(event, resetTimer));
+     resetTimer();
+
+     return () => {
+        clearTimeout(timeoutId);
+        events.forEach(event => window.removeEventListener(event, resetTimer));
+     };
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleScanSuccess = async (decodedText, decodedResult, resumeCallback) => {
     console.log(`Scan success: ${decodedText}`);
     setScanStatus('loading');

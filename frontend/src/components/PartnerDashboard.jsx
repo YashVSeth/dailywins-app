@@ -18,6 +18,27 @@ export default function PartnerDashboard() {
       navigate('/login');
    };
 
+   // 20-minute inactivity timer
+   useEffect(() => {
+      let timeoutId;
+      const resetTimer = () => {
+         clearTimeout(timeoutId);
+         timeoutId = setTimeout(() => {
+            handleLogout();
+         }, 20 * 60 * 1000); // 20 minutes
+      };
+
+      const events = ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll'];
+      events.forEach(event => window.addEventListener(event, resetTimer));
+      resetTimer();
+
+      return () => {
+         clearTimeout(timeoutId);
+         events.forEach(event => window.removeEventListener(event, resetTimer));
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
    useEffect(() => {
       // Treat hardware 'Back' button as an explicit logout action for security
       window.history.pushState(null, '', window.location.href);

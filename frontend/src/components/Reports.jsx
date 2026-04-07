@@ -249,8 +249,12 @@ export default function Reports({ downloadReport }) {
                         </div>
                         <h3 className="text-white text-lg font-black tracking-tight">Live Reward Ledger</h3>
                     </div>
-                    <button onClick={fetchLiveLogs} disabled={loadingLogs} className="text-slate-400 hover:text-white transition-colors">
-                       {loadingLogs ? <Loader2 className="w-5 h-5 animate-spin"/> : <RefreshCw className="w-5 h-5" />}
+                    <button 
+                        onClick={fetchLiveLogs} 
+                        disabled={loadingLogs} 
+                        className={`transition-all duration-200 active:scale-90 ${loadingLogs ? 'text-blue-500' : 'text-slate-400 hover:text-white'}`}
+                    >
+                       <RefreshCw className={`w-5 h-5 ${loadingLogs ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
 

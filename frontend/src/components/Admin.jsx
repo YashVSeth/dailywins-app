@@ -10,6 +10,7 @@ import {
 import { Navigate } from 'react-router-dom';
 import Businesses from './Businesses';
 import Coupons from './Coupons';
+import Challenges from './Challenges';
 import Rewards from './Rewards';
 import Reports from './Reports';
 import SettingsPanel from './Settings';

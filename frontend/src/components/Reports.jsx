@@ -150,70 +150,61 @@ export default function Reports({ downloadReport }) {
                     </button>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse whitespace-nowrap">
-                        <thead>
-                            <tr className="bg-[#0B1120]/80 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-[#1E293B]">
-                                <th className="px-6 py-4">Participant</th>
-                                <th className="px-6 py-4">Assigned Partner</th>
-                                <th className="px-6 py-4">Associated Template</th>
-                                <th className="px-6 py-4">Generation Time</th>
-                                <th className="px-6 py-4">Utilization</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loadingLogs ? (
-                                <tr>
-                                    <td colSpan="5" className="py-12 text-center text-slate-500 text-sm">
-                                        <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" /> Scanning logs...
-                                    </td>
-                                </tr>
-                            ) : liveLogs.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="py-12 text-center text-slate-500 text-sm font-medium">No rewards have been recorded yet.</td>
-                                </tr>
-                            ) : (
-                                liveLogs.map((log) => (
-                                    <tr key={log._id} className="border-b border-[#1E293B]/30 hover:bg-[#141E33]/30 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px] text-white">
-                                                    {log.userName ? log.userName.charAt(0).toUpperCase() : 'U'}
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-white font-bold text-sm tracking-wide">{log.phoneNumber}</span>
-                                                    <span className="text-slate-500 text-[10px]">{log.userName}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-3 py-1 bg-yellow-500/10 text-yellow-500 font-bold text-[11px] rounded-lg border border-yellow-500/20">{log.partner}</span>
-                                        </td>
-                                        <td className="px-6 py-4 text-slate-300 font-medium text-xs">
-                                            {log.challenge}
-                                        </td>
-                                        <td className="px-6 py-4 text-slate-400 text-xs">
-                                            {new Date(log.issuedAt).toLocaleString()}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {log.status === 'Used' ? (
-                                                <div className="flex flex-col items-start gap-1">
-                                                    <span className="px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 text-[10px] font-black tracking-widest uppercase border border-emerald-500/20 flex items-center gap-1">
-                                                        <CheckCircle className="w-3 h-3" /> REDEEMED
-                                                    </span>
-                                                    <span className="text-slate-500 text-[10px]">{new Date(log.redeemedAt).toLocaleString()}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-500 text-[10px] font-black tracking-widest uppercase border border-blue-500/20 flex items-center gap-1">
-                                                    ACTIVE REWARD
-                                                </span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {loadingLogs ? (
+                        <div className="col-span-full py-12 text-center text-slate-500 text-sm">
+                            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" /> Fetching live feeds...
+                        </div>
+                    ) : liveLogs.length === 0 ? (
+                        <div className="col-span-full py-12 text-center text-slate-500 text-sm font-medium">
+                            No rewards have been recorded yet.
+                        </div>
+                    ) : (
+                        liveLogs.map((log) => (
+                            <div key={log._id} className="bg-[#0B1120] border border-[#1E293B] rounded-[1rem] p-5 flex flex-col gap-4 hover:border-blue-500/30 transition-colors shadow-lg">
+                                {/* Top Row: Partner & Time */}
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="flex flex-col">
+                                        <span className="text-white font-bold text-sm truncate">{log.partner}</span>
+                                        <span className="text-slate-500 text-[10px] uppercase tracking-wider">{new Date(log.issuedAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})}</span>
+                                    </div>
+                                    <div className="shrink-0">
+                                        {log.status === 'Used' ? (
+                                            <span className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-500 text-[9px] font-black tracking-widest uppercase border border-emerald-500/20 flex items-center gap-1">
+                                                <CheckCircle className="w-2.5 h-2.5" /> REDEEMED
+                                            </span>
+                                        ) : (
+                                            <span className="px-2 py-1 rounded bg-blue-500/10 text-blue-500 text-[9px] font-black tracking-widest uppercase border border-blue-500/20">
+                                                ACTIVE
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                {/* Middle: User & Challenge */}
+                                <div className="bg-[#141E33]/30 rounded-xl p-3 border border-[#1E293B]/50">
+                                    <div className="text-slate-300 font-bold text-xs mb-1 line-clamp-2">{log.challenge}</div>
+                                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1E293B]/50">
+                                        <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center font-bold text-[9px] text-blue-400 shrink-0">
+                                            {log.userName ? log.userName.charAt(0).toUpperCase() : 'U'}
+                                        </div>
+                                        <div className="flex flex-col overflow-hidden">
+                                            <span className="text-white font-bold text-[11px] tracking-wide truncate">{log.phoneNumber}</span>
+                                            <span className="text-slate-500 text-[9px] truncate">{log.userName}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bottom Row: Status details */}
+                                {log.status === 'Used' && log.redeemedAt && (
+                                    <div className="text-emerald-500/80 text-[10px] font-medium flex items-center justify-between">
+                                        <span>Utilized at:</span>
+                                        <span>{new Date(log.redeemedAt).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 

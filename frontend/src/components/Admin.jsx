@@ -10,8 +10,8 @@ import {
 import { Navigate } from 'react-router-dom';
 import Businesses from './Businesses';
 import Coupons from './Coupons';
-import Challenges from './Challenges';
 import Rewards from './Rewards';
+import Reports from './Reports';
 import SettingsPanel from './Settings';
 import logo from '../assets/logo.png';
 import { useAdminStore } from '../store/useAdminStore';
@@ -265,6 +265,9 @@ const Admin = () => {
                   <button onClick={() => setActiveTab('rewards')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-sm ${activeTab === 'rewards' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-[#1E293B]/50'}`}>
                      <Gift className="w-5 h-5" /> Rewards
                   </button>
+                  <button onClick={() => setActiveTab('reports')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-sm ${activeTab === 'reports' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-[#1E293B]/50'}`}>
+                     <BarChart className="w-5 h-5" /> Reports
+                  </button>
                </nav>
 
                <div className="mt-8 mb-3 px-4 text-[10px] font-bold text-slate-600 tracking-widest uppercase">SYSTEM</div>
@@ -321,6 +324,7 @@ const Admin = () => {
                <button onClick={() => setActiveTab('coupons')} className={`shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${activeTab === 'coupons' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'bg-[#141E33]/50 text-slate-400 border border-[#1E293B]'}`}>Coupons</button>
                <button onClick={() => setActiveTab('challenges')} className={`shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${activeTab === 'challenges' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'bg-[#141E33]/50 text-slate-400 border border-[#1E293B]'}`}>Challenges</button>
                <button onClick={() => setActiveTab('rewards')} className={`shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${activeTab === 'rewards' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'bg-[#141E33]/50 text-slate-400 border border-[#1E293B]'}`}>Rewards</button>
+               <button onClick={() => setActiveTab('reports')} className={`shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${activeTab === 'reports' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'bg-[#141E33]/50 text-slate-400 border border-[#1E293B]'}`}>Reports</button>
                <button onClick={() => setActiveTab('settings')} className={`shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${activeTab === 'settings' ? 'bg-[#0E62E4] text-white shadow-lg shadow-blue-500/20' : 'bg-[#141E33]/50 text-slate-400 border border-[#1E293B]'}`}>Settings</button>
             </div>
 
@@ -336,12 +340,6 @@ const Admin = () => {
                            <h2 className="text-white text-2xl font-black tracking-tight">Overview</h2>
                            <p className="text-slate-500 text-sm">Real-time platform analytics</p>
                         </div>
-                        <button
-                           onClick={downloadReport}
-                           className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-sm font-bold transition-colors"
-                        >
-                           <FileDown className="w-4 h-4" /> Generate Report
-                        </button>
                      </div>
 
                      {/* 4 STAT CARDS */}
@@ -503,6 +501,7 @@ const Admin = () => {
                {activeTab === 'coupons' && <Coupons promoFormData={promoFormData} setPromoFormData={setPromoFormData} createPromo={createPromo} promoLoading={promoLoading} promoMessage={promoMessage} updatePromoStatus={updatePromoStatus} deletePromo={deletePromo} />}
                {activeTab === 'challenges' && <Challenges challengeFormData={challengeFormData} setChallengeFormData={setChallengeFormData} registerChallenge={registerChallenge} challengeLoading={challengeLoading} challengeMessage={challengeMessage} deleteChallenge={deleteChallenge} />}
                {activeTab === 'rewards' && <Rewards rewardFormData={rewardFormData} setRewardFormData={setRewardFormData} generateReward={generateReward} rewardLoading={rewardLoading} rewardMessage={rewardMessage} generatedCouponId={generatedCouponId} generatedQrCode={generatedQrCode} />}
+               {activeTab === 'reports' && <Reports downloadReport={downloadReport} />}
                {activeTab === 'settings' && <SettingsPanel />}
 
             </div>

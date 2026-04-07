@@ -208,3 +208,30 @@ exports.getTodaysCoupons = async (req, res) => {
     res.status(500).json({ message: 'Server error fetching today\'s coupons' });
   }
 };
+
+// 5. Get ALL generated coupons (Reports Live Dashboard)
+exports.getAllCoupons = async (req, res) => {
+  try {
+    const coupons = await Coupon.find({})
+      .populate('user', 'phoneNumber name')
+      .populate('partner', 'name')
+      .populate('challenge', 'title')
+      .sort({ issuedAt: -1 });
+
+    const result = coupons.map(c => ({
+      _id: c._id,
+      phoneNumber: c.user?.phoneNumber || 'N/A',
+      userName: c.user?.name || 'N/A',
+      partner: c.partner?.name || 'N/A',
+      challenge: c.challenge?.title || c.challengeDescription || 'N/A',
+      status: c.status,
+      issuedAt: c.issuedAt,
+      redeemedAt: c.redeemedAt
+    }));
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error fetching all coupons' });
+  }
+};

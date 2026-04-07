@@ -12,7 +12,7 @@ router.get('/status/:code', couponController.checkStatus);
 // 3. Redeem coupon (Partner Scanner)
 router.post('/redeem', requirePartner, couponController.redeemCoupon);
 
-// 4. Fetch specific coupon (Public Link for WhatsApp)
+router.get('/all', requireAdmin, couponController.getAllCoupons);
 router.get('/today', requireAdmin, couponController.getTodaysCoupons);
 router.get('/:id', couponController.getCouponById);
 

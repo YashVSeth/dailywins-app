@@ -188,50 +188,52 @@ export default function Reports({ downloadReport }) {
                     </div>
                 </button>
                 
-                {isInspectorOpen && (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6 animate-in slide-in-from-top-2 fade-in duration-200">
-                    <div className="md:col-span-2 flex flex-col sm:flex-row gap-4">
-                        <div className="flex-1">
-                            <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Select Business</label>
-                            <select 
-                                value={selectedPartner}
-                                onChange={(e) => setSelectedPartner(e.target.value)}
-                                className="w-full bg-[#0B1120] border border-[#1E293B] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer hover:border-blue-500/30 transition-colors"
-                            >
-                                <option value="ALL">All Businesses (Global)</option>
-                                {uniquePartners.map(p => (
-                                    <option key={p} value={p}>{p}</option>
-                                ))}
-                            </select>
+                <div className={`grid transition-all duration-200 ease-in-out ${isInspectorOpen ? 'grid-rows-[1fr] opacity-100 mt-6' : 'grid-rows-[0fr] opacity-0 mt-0 pointer-events-none'}`}>
+                    <div className="overflow-hidden">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div className="md:col-span-2 flex flex-col sm:flex-row gap-4">
+                                <div className="flex-1">
+                                    <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Select Business</label>
+                                    <select 
+                                        value={selectedPartner}
+                                        onChange={(e) => setSelectedPartner(e.target.value)}
+                                        className="w-full bg-[#0B1120] border border-[#1E293B] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer hover:border-blue-500/30 transition-colors"
+                                    >
+                                        <option value="ALL">All Businesses (Global)</option>
+                                        {uniquePartners.map(p => (
+                                            <option key={p} value={p}>{p}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="flex-1">
+                                    <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Timeframe</label>
+                                    <select 
+                                        value={selectedTimeframe}
+                                        onChange={(e) => setSelectedTimeframe(e.target.value)}
+                                        className="w-full bg-[#0B1120] border border-[#1E293B] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer hover:border-emerald-500/30 transition-colors"
+                                    >
+                                        <option value="ALL_TIME">All Time</option>
+                                        <option value="THIS_MONTH">This Month</option>
+                                        <option value="LAST_MONTH">Last Month</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            {/* Dynamic Stats */}
+                            <div className="bg-[#0B1120] border border-[#1E293B] rounded-xl p-5 flex flex-col justify-center relative overflow-hidden group hover:border-blue-500/30 transition-colors">
+                                <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-xl -mr-10 -mt-10 group-hover:bg-blue-500/20 transition-colors"></div>
+                                <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1 relative z-10">Total Generated</p>
+                                <p className="text-white text-3xl font-black relative z-10">{inspectorStats.issued}</p>
+                            </div>
+                            
+                            <div className="bg-[#0B1120] border border-[#1E293B] rounded-xl p-5 flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
+                                <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-colors"></div>
+                                <p className="text-emerald-500/70 text-[10px] font-bold tracking-widest uppercase mb-1 relative z-10">Total Redeemed</p>
+                                <p className="text-white text-3xl font-black relative z-10">{inspectorStats.redeemed}</p>
+                            </div>
                         </div>
-                        <div className="flex-1">
-                            <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Timeframe</label>
-                            <select 
-                                value={selectedTimeframe}
-                                onChange={(e) => setSelectedTimeframe(e.target.value)}
-                                className="w-full bg-[#0B1120] border border-[#1E293B] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer hover:border-emerald-500/30 transition-colors"
-                            >
-                                <option value="ALL_TIME">All Time</option>
-                                <option value="THIS_MONTH">This Month</option>
-                                <option value="LAST_MONTH">Last Month</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    {/* Dynamic Stats */}
-                    <div className="bg-[#0B1120] border border-[#1E293B] rounded-xl p-5 flex flex-col justify-center relative overflow-hidden group hover:border-blue-500/30 transition-colors">
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-xl -mr-10 -mt-10 group-hover:bg-blue-500/20 transition-colors"></div>
-                        <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1 relative z-10">Total Generated</p>
-                        <p className="text-white text-3xl font-black relative z-10">{inspectorStats.issued}</p>
-                    </div>
-                    
-                    <div className="bg-[#0B1120] border border-[#1E293B] rounded-xl p-5 flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-colors"></div>
-                        <p className="text-emerald-500/70 text-[10px] font-bold tracking-widest uppercase mb-1 relative z-10">Total Redeemed</p>
-                        <p className="text-white text-3xl font-black relative z-10">{inspectorStats.redeemed}</p>
                     </div>
                 </div>
-                )}
             </div>
 
             {/* LIVE DASHBOARD LEDGER */}

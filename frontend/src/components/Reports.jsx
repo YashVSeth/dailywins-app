@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, BarChart, Bar, YAxis } from 'recharts';
-import { Loader2, Download, FileDown, Flame, Search, Bell, Activity, Users, Store, CheckCircle } from 'lucide-react';
+import { Loader2, Download, FileDown, Flame, Search, Bell, Activity, Users, Store, CheckCircle, Filter } from 'lucide-react';
 import { useAdminStore } from '../store/useAdminStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -12,6 +12,10 @@ export default function Reports({ downloadReport }) {
     const { stats, partners, chartData } = useAdminStore();
     const [liveLogs, setLiveLogs] = useState([]);
     const [loadingLogs, setLoadingLogs] = useState(true);
+
+    // Inspector States
+    const [selectedPartner, setSelectedPartner] = useState('ALL');
+    const [selectedTimeframe, setSelectedTimeframe] = useState('ALL_TIME');
 
     const fetchLiveLogs = async () => {
         setLoadingLogs(true);
@@ -44,6 +48,42 @@ export default function Reports({ downloadReport }) {
         }, {});
         return Object.entries(counts).map(([name, value]) => ({ name, value }));
     }, [partners]);
+
+    const uniquePartners = useMemo(() => {
+        const names = new Set();
+        liveLogs.forEach(log => {
+            if (log.partner && log.partner !== 'N/A') names.add(log.partner);
+        });
+        return Array.from(names).sort();
+    }, [liveLogs]);
+
+    const filteredLogs = useMemo(() => {
+        return liveLogs.filter(log => {
+            if (selectedPartner !== 'ALL' && log.partner !== selectedPartner) return false;
+            
+            if (selectedTimeframe !== 'ALL_TIME') {
+                const logDate = new Date(log.issuedAt);
+                const now = new Date();
+                if (selectedTimeframe === 'THIS_MONTH') {
+                    if (logDate.getMonth() !== now.getMonth() || logDate.getFullYear() !== now.getFullYear()) return false;
+                } else if (selectedTimeframe === 'LAST_MONTH') {
+                    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    if (logDate.getMonth() !== lastMonth.getMonth() || logDate.getFullYear() !== lastMonth.getFullYear()) return false;
+                }
+            }
+            return true;
+        });
+    }, [liveLogs, selectedPartner, selectedTimeframe]);
+
+    const inspectorStats = useMemo(() => {
+        let issued = 0;
+        let redeemed = 0;
+        filteredLogs.forEach(log => {
+            issued++;
+            if (log.status === 'Used') redeemed++;
+        });
+        return { issued, redeemed };
+    }, [filteredLogs]);
 
     return (
         <div className="w-full mt-4 pb-12 animate-in fade-in duration-300 space-y-6">
@@ -132,6 +172,57 @@ export default function Reports({ downloadReport }) {
                 </div>
             </div>
 
+            {/* PARTNER INSPECTOR */}
+            <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
+                <div className="flex items-center gap-2 mb-6">
+                    <Filter className="w-5 h-5 text-blue-500" />
+                    <h3 className="text-white font-bold text-lg">Partner Inspector</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="md:col-span-2 flex flex-col sm:flex-row gap-4">
+                        <div className="flex-1">
+                            <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Select Business</label>
+                            <select 
+                                value={selectedPartner}
+                                onChange={(e) => setSelectedPartner(e.target.value)}
+                                className="w-full bg-[#0B1120] border border-[#1E293B] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer hover:border-blue-500/30 transition-colors"
+                            >
+                                <option value="ALL">All Businesses (Global)</option>
+                                {uniquePartners.map(p => (
+                                    <option key={p} value={p}>{p}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex-1">
+                            <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Timeframe</label>
+                            <select 
+                                value={selectedTimeframe}
+                                onChange={(e) => setSelectedTimeframe(e.target.value)}
+                                className="w-full bg-[#0B1120] border border-[#1E293B] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer hover:border-emerald-500/30 transition-colors"
+                            >
+                                <option value="ALL_TIME">All Time</option>
+                                <option value="THIS_MONTH">This Month</option>
+                                <option value="LAST_MONTH">Last Month</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    {/* Dynamic Stats */}
+                    <div className="bg-[#0B1120] border border-[#1E293B] rounded-xl p-5 flex flex-col justify-center relative overflow-hidden group hover:border-blue-500/30 transition-colors">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-xl -mr-10 -mt-10 group-hover:bg-blue-500/20 transition-colors"></div>
+                        <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1 relative z-10">Total Generated</p>
+                        <p className="text-white text-3xl font-black relative z-10">{inspectorStats.issued}</p>
+                    </div>
+                    
+                    <div className="bg-[#0B1120] border border-[#1E293B] rounded-xl p-5 flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-colors"></div>
+                        <p className="text-emerald-500/70 text-[10px] font-bold tracking-widest uppercase mb-1 relative z-10">Total Redeemed</p>
+                        <p className="text-white text-3xl font-black relative z-10">{inspectorStats.redeemed}</p>
+                    </div>
+                </div>
+            </div>
+
             {/* LIVE DASHBOARD LEDGER */}
             <div className="bg-[#0B1120] border-2 border-[#1E293B] rounded-2xl overflow-hidden relative">
                 {/* Subtle top decoration */}
@@ -155,12 +246,12 @@ export default function Reports({ downloadReport }) {
                         <div className="col-span-full py-12 text-center text-slate-500 text-sm">
                             <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" /> Fetching live feeds...
                         </div>
-                    ) : liveLogs.length === 0 ? (
+                    ) : filteredLogs.length === 0 ? (
                         <div className="col-span-full py-12 text-center text-slate-500 text-sm font-medium">
-                            No rewards have been recorded yet.
+                            No matching rewards found for your selection.
                         </div>
                     ) : (
-                        liveLogs.map((log) => (
+                        filteredLogs.map((log) => (
                             <div key={log._id} className="bg-[#0B1120] border border-[#1E293B] rounded-[1rem] p-5 flex flex-col gap-4 hover:border-blue-500/30 transition-colors shadow-lg">
                                 {/* Top Row: Partner & Time */}
                                 <div className="flex items-start justify-between gap-3">

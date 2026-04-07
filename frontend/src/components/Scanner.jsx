@@ -8,7 +8,10 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
       fps: 10,
       qrbox: { width: 250, height: 250 },
       aspectRatio: 1.0,
-      supportedScanTypes: [0] // 0 == QR_CODE
+      supportedScanTypes: [0], // 0 == QR_CODE
+      videoConstraints: {
+        facingMode: "environment",
+      }
     };
 
     // Initialize scanner instance with verbose = false

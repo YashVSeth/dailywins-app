@@ -7,7 +7,7 @@ exports.getStats = async (req, res) => {
   try {
     const totalCoupons = await Coupon.countDocuments();
     const redeemedCoupons = await Coupon.countDocuments({ status: 'Used' });
-    const activeCoupons = await Coupon.countDocuments({ status: 'Valid' });
+    const activeCoupons = totalCoupons - redeemedCoupons;
     const totalPartners = await Partner.countDocuments();
     const totalChallenges = await Challenge.countDocuments();
     const totalUsers = await User.countDocuments();

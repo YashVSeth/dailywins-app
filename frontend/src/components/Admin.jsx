@@ -358,11 +358,11 @@ const Admin = () => {
 
                         <div className="bg-[#141E33]/20 border border-[#1E293B] p-6 rounded-[1.25rem] flex flex-col justify-between">
                            <div className="flex items-center justify-between mb-4">
-                              <span className="text-slate-400 font-semibold text-sm">Total Rewards Issued</span>
+                              <span className="text-slate-400 font-semibold text-sm">Active Rewards</span>
                               <div className="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center"><Ticket className="w-4 h-4 text-orange-500" /></div>
                            </div>
                            <div className="flex items-baseline gap-3">
-                              <h2 className="text-[2rem] font-bold text-white tracking-tight leading-none">{stats?.totalCoupons ?? '0'}</h2>
+                              <h2 className="text-[2rem] font-bold text-white tracking-tight leading-none">{stats?.activeCoupons ?? '0'}</h2>
                            </div>
                         </div>
 

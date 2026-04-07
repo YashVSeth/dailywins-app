@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, BarChart, Bar, YAxis } from 'recharts';
-import { Loader2, Download, FileDown, Flame, Search, Bell, Activity, Users, Store, CheckCircle, Filter } from 'lucide-react';
+import { Loader2, Download, FileDown, Flame, Search, Bell, Activity, Users, Store, CheckCircle, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAdminStore } from '../store/useAdminStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -14,6 +14,7 @@ export default function Reports({ downloadReport }) {
     const [loadingLogs, setLoadingLogs] = useState(true);
 
     // Inspector States
+    const [isInspectorOpen, setIsInspectorOpen] = useState(false);
     const [selectedPartner, setSelectedPartner] = useState('ALL');
     const [selectedTimeframe, setSelectedTimeframe] = useState('ALL_TIME');
 
@@ -173,13 +174,22 @@ export default function Reports({ downloadReport }) {
             </div>
 
             {/* PARTNER INSPECTOR */}
-            <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6">
-                <div className="flex items-center gap-2 mb-6">
-                    <Filter className="w-5 h-5 text-blue-500" />
-                    <h3 className="text-white font-bold text-lg">Partner Inspector</h3>
-                </div>
+            <div className="bg-[#141E33]/30 border border-[#1E293B] rounded-2xl p-6 transition-all duration-300">
+                <button 
+                    onClick={() => setIsInspectorOpen(!isInspectorOpen)}
+                    className="w-full flex items-center justify-between outline-none"
+                >
+                    <div className="flex items-center gap-2">
+                        <Filter className="w-5 h-5 text-blue-500" />
+                        <h3 className="text-white font-bold text-lg">Partner Inspector</h3>
+                    </div>
+                    <div className="p-1 bg-[#1E293B]/50 rounded-lg text-slate-400 hover:text-white transition-colors">
+                        {isInspectorOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    </div>
+                </button>
                 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {isInspectorOpen && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6 animate-in slide-in-from-top-2 fade-in duration-200">
                     <div className="md:col-span-2 flex flex-col sm:flex-row gap-4">
                         <div className="flex-1">
                             <label className="block text-slate-400 text-xs font-bold mb-2 uppercase tracking-wide">Select Business</label>
@@ -221,6 +231,7 @@ export default function Reports({ downloadReport }) {
                         <p className="text-white text-3xl font-black relative z-10">{inspectorStats.redeemed}</p>
                     </div>
                 </div>
+                )}
             </div>
 
             {/* LIVE DASHBOARD LEDGER */}

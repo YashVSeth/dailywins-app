@@ -29,6 +29,7 @@ export default function Businesses({
     const [analyticsDrawerOpenFor, setAnalyticsDrawerOpenFor] = useState(null);
     const [partnerStats, setPartnerStats] = useState(null);
     const [loadingStats, setLoadingStats] = useState(false);
+    const [categoryOpen, setCategoryOpen] = useState(false);
 
     const fetchAnalytics = async (partner) => {
         setActionMenuOpenId(null);
@@ -122,17 +123,22 @@ export default function Businesses({
                             <div>
                                 <label className="block text-slate-300 text-xs font-bold mb-3">Category</label>
                                 <div className="relative">
-                                    <select value={partnerFormData.category} onChange={e=>setPartnerFormData({...partnerFormData, category: e.target.value})} className="appearance-none w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium text-slate-300 focus:outline-none focus:border-yellow-500/50 transition-colors">
-                                        <option value="">Select Category</option>
-                                        <option value="Retail & Wholesale">Retail & Wholesale</option>
-                                        <option value="Food & Beverage">Food & Beverage</option>
-                                        <option value="Health & Fitness">Health & Fitness</option>
-                                        <option value="Software">Software</option>
-                                        <option value="E-commerce">E-commerce</option>
-                                        <option value="Marketing">Marketing</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                    <ChevronRight className="w-4 h-4 text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 rotate-90" />
+                                    <button type="button" onClick={() => setCategoryOpen(!categoryOpen)} className="appearance-none w-full bg-[#141E33]/50 border border-[#1E293B] rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium text-left focus:outline-none focus:border-yellow-500/50 transition-colors cursor-pointer" style={{color: partnerFormData.category ? '#cbd5e1' : '#334155'}}>
+                                        {partnerFormData.category || 'Select Category'}
+                                    </button>
+                                    <ChevronRight className={`w-4 h-4 text-slate-500 absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-200 ${categoryOpen ? 'rotate-[270deg]' : 'rotate-90'}`} />
+                                    {categoryOpen && (
+                                        <>
+                                            <div className="fixed inset-0 z-30" onClick={() => setCategoryOpen(false)} />
+                                            <div className="absolute left-0 right-0 top-full mt-2 bg-[#0B1120] border border-[#1E293B] rounded-xl shadow-2xl shadow-black/40 z-40 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                                                {['Retail & Wholesale','Food & Beverage','Health & Fitness','Software','E-commerce','Marketing','Other'].map(cat => (
+                                                    <button key={cat} type="button" onClick={() => { setPartnerFormData({...partnerFormData, category: cat}); setCategoryOpen(false); }} className={`w-full px-4 py-3 text-sm font-medium text-left transition-colors ${partnerFormData.category === cat ? 'bg-yellow-500/10 text-yellow-400' : 'text-slate-300 hover:bg-[#1E293B] hover:text-white'}`}>
+                                                        {cat}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                             <div>

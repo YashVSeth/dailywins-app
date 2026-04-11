@@ -9,13 +9,23 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
   const scannerRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (scannerRef.current) {
-        scannerRef.current.stop().catch(() => {});
-        scannerRef.current.clear().catch(() => {});
+        const scanner = scannerRef.current;
         scannerRef.current = null;
+        try {
+          // html5-qrcode .stop() and .clear() can throw synchronously and crash React
+          scanner.stop()
+            .then(() => {
+              try { scanner.clear(); } catch (e) { /* ignore */ }
+            })
+            .catch(() => {
+              try { scanner.clear(); } catch (e) { /* ignore */ }
+            });
+        } catch (e) {
+          try { scanner.clear(); } catch (err) { /* ignore */ }
+        }
       }
     };
   }, []);

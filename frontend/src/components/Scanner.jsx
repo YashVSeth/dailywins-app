@@ -80,7 +80,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
       if (err?.toString().includes('NotAllowedError')) {
         setError('Camera permission denied. Please allow camera access in your browser settings.');
       } else {
-        setError('Failed to start rear camera. Please ensure camera permissions are active.');
+        setError(`Failed to start camera: ${err?.message || err?.toString()}`);
       }
     } finally {
       setIsStarting(false);

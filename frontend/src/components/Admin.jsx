@@ -69,13 +69,13 @@ const Admin = () => {
 
    // -- GLOBAL DATA (from Zustand) --
    const {
-      stats, chartData, recentActivity, partners, challenges, promos,
+      stats, chartData, recentActivity, challenges,
       fetchAllData
    } = useAdminStore();
 
    useEffect(() => {
       if (auth) fetchAllData();
-   }, [auth]);
+   }, [auth, fetchAllData]);
 
    // -- FORM STATES --
    const [rewardFormData, setRewardFormData] = useState({ phoneNumber: '', challengeId: '' });

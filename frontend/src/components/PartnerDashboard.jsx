@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Target, QrCode, LogOut, TrendingUp, Users, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -13,10 +13,10 @@ export default function PartnerDashboard() {
    const [loading, setLoading] = useState(true);
    const navigate = useNavigate();
 
-   const handleLogout = () => {
+   const handleLogout = useCallback(() => {
       localStorage.removeItem('partnerAuth');
       navigate('/login');
-   };
+   }, [navigate]);
 
    // 20-minute inactivity timer
    useEffect(() => {
@@ -70,7 +70,7 @@ export default function PartnerDashboard() {
       fetchStats();
 
       return () => window.removeEventListener('popstate', handlePopState);
-   }, [navigate]);
+   }, [navigate, handleLogout]);
 
    if (loading) {
       return (

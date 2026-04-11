@@ -9,7 +9,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const COLORS = ['#0E62E4', '#10B981', '#FACC15', '#F97316', '#8B5CF6', '#EC4899', '#14B8A6'];
 
 export default function Reports({ downloadReport }) {
-    const { stats, partners, chartData } = useAdminStore();
+    const { partners, chartData } = useAdminStore();
     const [liveLogs, setLiveLogs] = useState([]);
     const [loadingLogs, setLoadingLogs] = useState(true);
 

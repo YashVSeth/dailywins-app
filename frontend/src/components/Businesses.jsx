@@ -18,7 +18,7 @@ export default function Businesses({
     updatePartnerStatus,
     deletePartner
 }) {
-    const { stats, partners, promos } = useAdminStore();
+    const { stats, partners } = useAdminStore();
     const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
     const [activateModalOpenFor, setActivateModalOpenFor] = useState(null);
     const [portalCreds, setPortalCreds] = useState({ id: '', password: '' });

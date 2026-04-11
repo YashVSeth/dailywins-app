@@ -35,8 +35,27 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
 
       const qrboxSize = Math.min(window.innerWidth - 80, 260);
 
+      // We explicitly fetch hardware IDs because forcing `{facingMode: environment}` crashes on laptops and some older mobile OS versions
+      const devices = await Html5Qrcode.getCameras();
+      if (!devices || devices.length === 0) {
+         setError('No cameras found on this device.');
+         setIsStarting(false);
+         return;
+      }
+
+      // Attempt to identify the rear camera reliably
+      const backCamera = devices.find(d => 
+         d.label.toLowerCase().includes('back') || 
+         d.label.toLowerCase().includes('rear') || 
+         d.label.toLowerCase().includes('environment')
+      );
+
+      // If no labelled back camera exists, but there are multiple, the rear camera is almost always at the end of the array on Android/iOS.
+      // If there's only 1 camera (like a laptop), it just safely picks that one.
+      const targetCameraId = backCamera ? backCamera.id : devices[devices.length - 1].id;
+
       await scannerRef.current.start(
-        { facingMode: "environment" }, // strictly defaults to the rear camera reliably across all mobile OS
+        targetCameraId,
         {
           fps: 12,
           qrbox: { width: qrboxSize, height: qrboxSize },

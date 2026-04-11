@@ -87,7 +87,7 @@ export default function Businesses({
 
             {/* Onboard New Business Form */}
             {isAddingBusiness && (
-                <div className="bg-[#0B1120] border-2 border-[#1E293B] hover:border-yellow-500/50 transition-colors rounded-2xl p-8 mb-10 relative overflow-hidden group shadow-[0_0_30px_rgba(250,204,21,0.03)] focus-within:shadow-[0_0_30px_rgba(250,204,21,0.05)] focus-within:border-yellow-500/50">
+                <div className="bg-[#0B1120] border-2 border-[#1E293B] hover:border-yellow-500/50 transition-colors rounded-2xl p-8 mb-10 relative group shadow-[0_0_30px_rgba(250,204,21,0.03)] focus-within:shadow-[0_0_30px_rgba(250,204,21,0.05)] focus-within:border-yellow-500/50">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent"></div>
                     
                     <button onClick={() => setIsAddingBusiness(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">

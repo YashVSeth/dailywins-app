@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Camera, SwitchCamera, Flashlight, X } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 const Scanner = ({ onScanSuccess, onScanFailure }) => {
   const [isStarted, setIsStarted] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-  const [cameras, setCameras] = useState([]);
-  const [activeCameraIdx, setActiveCameraIdx] = useState(0);
   const [error, setError] = useState('');
   const scannerRef = useRef(null);
   const containerRef = useRef(null);
@@ -22,33 +20,11 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
     };
   }, []);
 
-  const startScanner = async (cameraIndex) => {
+  const startScanner = async () => {
     setIsStarting(true);
     setError('');
 
     try {
-      // Get available cameras
-      const devices = await Html5Qrcode.getCameras();
-      if (!devices || devices.length === 0) {
-        setError('No cameras found on this device.');
-        setIsStarting(false);
-        return;
-      }
-      setCameras(devices);
-
-      // Prefer back camera on mobile
-      let selectedIdx = cameraIndex ?? 0;
-      if (cameraIndex === undefined && devices.length > 1) {
-        const backIdx = devices.findIndex(d =>
-          d.label.toLowerCase().includes('back') ||
-          d.label.toLowerCase().includes('rear') ||
-          d.label.toLowerCase().includes('environment')
-        );
-        if (backIdx !== -1) selectedIdx = backIdx;
-        else selectedIdx = devices.length - 1; // Usually back camera is last
-      }
-      setActiveCameraIdx(selectedIdx);
-
       // Create scanner if not exists
       if (!scannerRef.current) {
         scannerRef.current = new Html5Qrcode('qr-video-element');
@@ -60,7 +36,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
       const qrboxSize = Math.min(window.innerWidth - 80, 260);
 
       await scannerRef.current.start(
-        devices[selectedIdx].id,
+        { facingMode: "environment" }, // strictly defaults to the rear camera reliably across all mobile OS
         {
           fps: 12,
           qrbox: { width: qrboxSize, height: qrboxSize },
@@ -85,17 +61,11 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
       if (err?.toString().includes('NotAllowedError')) {
         setError('Camera permission denied. Please allow camera access in your browser settings.');
       } else {
-        setError('Failed to start camera. Please try again.');
+        setError('Failed to start rear camera. Please ensure camera permissions are active.');
       }
     } finally {
       setIsStarting(false);
     }
-  };
-
-  const switchCamera = async () => {
-    if (cameras.length < 2) return;
-    const nextIdx = (activeCameraIdx + 1) % cameras.length;
-    await startScanner(nextIdx);
   };
 
   // Not started — show permission/start screen
@@ -120,7 +90,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
 
           <h3 className="text-white text-xl font-bold mb-2 relative z-10">Ready to Scan</h3>
           <p className="text-slate-400 text-sm mb-8 relative z-10 max-w-[240px]">
-            Tap below to activate the camera and start scanning customer QR codes
+            Tap below to activate the rear camera and start scanning customer QR codes
           </p>
 
           {error && (
@@ -177,24 +147,11 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
               <div className="absolute left-2 right-2 h-[2px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-80 animate-scanline" />
             </div>
           </div>
-
-          {/* Camera controls bar */}
-          <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-4 py-3 bg-gradient-to-t from-[#0B1120] to-transparent">
-            {cameras.length > 1 && (
-              <button
-                onClick={switchCamera}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-xl text-white text-xs font-bold transition-all active:scale-95"
-              >
-                <SwitchCamera className="w-4 h-4" />
-                Flip
-              </button>
-            )}
-          </div>
         </div>
 
         {/* Hint text */}
         <p className="text-center text-slate-500 text-xs font-medium mt-4 tracking-wide">
-          Point your camera at the QR code
+          Point your rear camera at the QR code
         </p>
       </div>
 
@@ -218,6 +175,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }) => {
         #qr-video-element video {
           border-radius: 1rem !important;
           object-fit: cover !important;
+          transform: none !important; /* Ensure no mirror effect on rear camera */
         }
         #qr-video-element {
           border: none !important;

@@ -17,23 +17,20 @@ export default function App() {
   const [auth, setAuth] = useState(null);
   const [authChecking, setAuthChecking] = useState(true);
 
-  useEffect(() => {
-     const stored = localStorage.getItem('partnerAuth');
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-     if (stored) setAuth(JSON.parse(stored));
-     setAuthChecking(false);
-  }, []);
-
-  if (authChecking) return <div className="min-h-screen bg-slate-900 flex items-center justify-center"><Loader2 className="w-10 h-10 text-indigo-500 animate-spin" /></div>;
-  if (!auth) return <Navigate to="/login" replace />;
-
   const handleLogout = () => {
      localStorage.removeItem('partnerAuth');
      setAuth(null);
   };
 
-  // 20-minute inactivity timer
   useEffect(() => {
+     const stored = localStorage.getItem('partnerAuth');
+     if (stored) setAuth(JSON.parse(stored));
+     setAuthChecking(false);
+  }, []);
+
+  // 20-minute inactivity timer — must be declared before any early returns
+  useEffect(() => {
+     if (!auth) return; // skip timer when not authenticated
      let timeoutId;
      const resetTimer = () => {
         clearTimeout(timeoutId);
@@ -51,7 +48,11 @@ export default function App() {
         events.forEach(event => window.removeEventListener(event, resetTimer));
      };
      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [auth]);
+
+  // Early returns AFTER all hooks
+  if (authChecking) return <div className="min-h-screen bg-slate-900 flex items-center justify-center"><Loader2 className="w-10 h-10 text-indigo-500 animate-spin" /></div>;
+  if (!auth) return <Navigate to="/login" replace />;
 
   const handleScanSuccess = async (decodedText, decodedResult, resumeCallback) => {
     console.log(`Scan success: ${decodedText}`);

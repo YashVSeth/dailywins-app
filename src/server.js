@@ -51,6 +51,7 @@ app.use('/api/stats', statsRoutes);
 
 // Start Cron Jobs
 require('./scripts/cleanup');
+require('./scripts/keepAlive');
 
 // Start Server
 app.listen(PORT, () => {
